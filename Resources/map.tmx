@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="15" height="15" tilewidth="40" tileheight="40" nextobjectid="3">
+ <tileset firstgid="1" name="TownGround" tilewidth="40" tileheight="40" tilecount="7" columns="7">
+  <image source="TownGround.png" width="280" height="40"/>
+ </tileset>
+ <tileset firstgid="8" name="j" tilewidth="40" tileheight="44" tilecount="1" columns="0">
+  <tile id="0">
+   <image width="40" height="44" source="TownBox.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="9" name="collidablesTileSet" tilewidth="40" tileheight="40" tilecount="4" columns="4">
+  <image source="collidablesTileSet.png" width="192" height="64"/>
+  <tile id="0">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="13" name="TownHouseBlue" tilewidth="40" tileheight="40" tilecount="2" columns="1">
+  <image source="TownHouseBlue.png" width="40" height="80"/>
+ </tileset>
+ <tileset firstgid="15" name="TownHouseBlueRoof" tilewidth="40" tileheight="40" tilecount="2" columns="1">
+  <image source="TownHouseBlueRoof.png" width="40" height="80"/>
+ </tileset>
+ <layer name="Background" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgYMSCmYGYDUpjk8eHWZAwqXopsXdU76heWuildXoGAH9CAWk=
+  </data>
+ </layer>
+ <layer name="Layer1" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJzjYGBg4KAAkwNG9Y7qHdWL0AsADbEBWQ==
+  </data>
+ </layer>
+ <layer name="house_2" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYBhYwIeDTYkZhMzhQ6OxyRNjBi6My2xi3UWMWlLVo7sLm158ZuCyi1Q9pNpLDsDlV3R7qG0vuQAA7jkCMQ==
+  </data>
+ </layer>
+ <layer name="collidable" width="15" height="15">
+  <properties>
+   <property name="collidable" type="bool" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJzjZGBg4KQAkwOQ9XKiiZOiF5s+fO5CdzchdfjECIUJLrX4ALawIOQfbGxsbsZF4xPDZT6x9hJjByF7SQG44gBXfNPCXnIwAAI6A2E=
+  </data>
+ </layer>
+ <layer name="layer2" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUUANwkIFBAAAQhABp
+  </data>
+ </layer>
+ <objectgroup name="player">
+  <object id="1" x="298" y="219"/>
+ </objectgroup>
+ <layer name="layer3" width="15" height="15">
+  <data encoding="base64" compression="zlib">
+   eJzFkV0KACAIg71Bu/9peykYy5nQQwNRLPf1E/GuYeqOQHNc33wGZVAfKyoP5WSxPRwXJnhd5xGn3NtVezW7nrL1jXW2YvJ9ulz9l07P+TpOxXU5O99PTRgABDk=
+  </data>
+ </layer>
+</map>
