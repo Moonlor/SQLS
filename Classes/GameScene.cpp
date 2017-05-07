@@ -199,3 +199,228 @@ void Game::update(float delta){
 
 }
 
+
+void Game::keyPressedDuration(EventKeyboard::KeyCode code){
+    //设置偏移的数量，就是每一帧向前走的像素点，修改它会修改速度
+    //跟周左左教程里用的原理相同
+    int offsetX = 0, offsetY = 0;
+    //这四个值是用来做碰撞检测  补充只能检测菱形的不足
+    float
+    collidableAmendLeftX = 0,
+    collidableAmendRightX = 0,
+    collidableAmendUpY = 0,
+    collidableAmendDownY = 0;
+    
+    //设置Texture的值
+    if (_keys[EventKeyboard::KeyCode::KEY_LEFT_ARROW] == true) {
+        _player->setTexture(_player_texture_left);
+    }else if(_keys[EventKeyboard::KeyCode::KEY_RIGHT_ARROW] == true){
+        _player->setTexture(_player_texture_right);
+    }else if(_keys[EventKeyboard::KeyCode::KEY_UP_ARROW] == true){
+        _player->setTexture(_player_texture_up);
+    }else if(_keys[EventKeyboard::KeyCode::KEY_DOWN_ARROW] == true){
+        _player->setTexture(_player_texture_down);
+    }
+    
+    //检测行走方向，并根据不同的方向确定偏移值与检测碰撞的值
+    //拿第一个case举例
+    //比如向左走的时候 我只要确定一个左上跟左下两个点的值就可以了
+    switch (code) {
+            //case1 当按键为Left时  说明此时间人物向左走
+        case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+            offsetX = -2;
+            collidableAmendLeftX  = - _player->getContentSize().width / 2 ;  //我能知道的只是player中心点的坐标  把三个值是加起来确定偏移的两个点
+            collidableAmendUpY = _tileMap->getTileSize().height / 2 - 6;    // +6 +4 是不要用来判断正方形的端点
+            collidableAmendDownY = - _tileMap->getTileSize().height / 2 + 4;
+            break;
+        case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+            offsetX = 2;
+            collidableAmendRightX = _player->getContentSize().width / 2;
+            collidableAmendUpY = _tileMap->getTileSize().height / 2 - 6;
+            collidableAmendDownY = - _tileMap->getTileSize().height / 2 + 4;
+            break;
+        case EventKeyboard::KeyCode::KEY_UP_ARROW:
+            offsetY = 2;
+            collidableAmendUpY = _tileMap->getTileSize().height / 2 ;
+            collidableAmendLeftX = - _player->getContentSize().width / 2 + 6;
+            collidableAmendRightX = _player->getContentSize().width / 2 - 6;
+            break;
+        case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+            offsetY = -2;
+            collidableAmendLeftX = - _player->getContentSize().width / 2 + 6;
+            collidableAmendRightX = _player->getContentSize().width / 2 - 6;
+            collidableAmendDownY = - _tileMap->getTileSize().height / 2 - 3;
+            break;
+        case EventKeyboard::KeyCode::KEY_SPACE:{
+            //获取玩家的位置
+            Vec2 _tilePlayer = tileCoordForPosition(_player->getPosition());
+            Vec2 _popPosition = positionForTileCoord(_tilePlayer);
+            
+            //创建一个泡泡，放置在玩家所在格子的中心
+            Sprite* pop = Sprite::create("pop.png");
+            pop->setPosition(_popPosition);
+            
+            //泡泡的zorder要比玩家低
+            _tileMap->addChild(pop, 1);
+            
+            //从泡泡被放入vector到泡泡爆炸的延时
+            DelayTime * _delayDelete = DelayTime::create(2.5f);
+            //从泡泡放置到泡泡被放入泡泡vector的延时
+            DelayTime * _delayPush = DelayTime::create(0.5f);
+            auto callFunc1 = CallFunc::create([=]{
+                _popVector.pushBack(pop);
+            });
+            auto callFunc2 = CallFunc::create([=]{
+                //泡泡爆炸时，获取地图上现存的第一个被放置的泡泡并删除它
+                auto pop = _popVector.at(0);
+                _tileMap->removeChild(pop);
+                _popVector.eraseObject(pop);
+            });
+            //创建一个序列动作，放置泡泡->泡泡加入泡泡vector->泡泡爆炸
+            auto action = Sequence::create(_delayPush,callFunc1,_delayDelete,callFunc2 ,NULL);
+            pop->runAction(action);
+            
+            break;
+        }
+        default:
+            offsetY = offsetX = 0;
+            break;
+    }
+    
+    
+    
+    //用来做碰撞检测的四个点, 分辨代表四个角 左上，左下，右上，右下  注意这个是个偏移量  还不是我们要确定的两个检测点
+    Vec2 amendLeftUp = Vec2(offsetX + collidableAmendLeftX ,offsetY + collidableAmendUpY),
+    amendLeftDown = Vec2(offsetX + collidableAmendLeftX ,offsetY + collidableAmendDownY),
+    amendRightUp = Vec2(offsetX + collidableAmendRightX ,offsetY + collidableAmendUpY),
+    amendRightDown = Vec2(offsetX + collidableAmendRightX,offsetY + collidableAmendDownY);
+    
+    //即将要做碰撞检测的两个点, 用刚才根据方向确定的碰撞值来初始化两个点   到现在终于找出来确定碰撞的两个点了  呜呜呜
+    Vec2 collidableTest1, collidableTest2;
+    
+    switch (code) {
+        case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+            collidableTest1 = tileCoordForPosition(_player->getPosition() + amendLeftUp);
+            
+            collidableTest2 = tileCoordForPosition(_player->getPosition() + amendLeftDown);
+            break;
+        case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+            collidableTest1 = tileCoordForPosition(_player->getPosition() + amendRightUp);
+            collidableTest2 = tileCoordForPosition(_player->getPosition() + amendRightDown);
+            
+            break;
+        case EventKeyboard::KeyCode::KEY_UP_ARROW:
+            
+            collidableTest1 = tileCoordForPosition(_player->getPosition() + amendLeftUp);
+            collidableTest2 = tileCoordForPosition(_player->getPosition() + amendRightUp);
+            break;
+        case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+            
+            collidableTest1 = tileCoordForPosition(_player->getPosition() + amendLeftDown);
+            collidableTest2 = tileCoordForPosition(_player->getPosition() + amendRightDown);
+            break;
+            
+        default:
+            offsetY = offsetX = 0;
+            break;
+    }
+    
+    
+    //目标位置 如果接下来的碰撞检测没问题，player就会move到这个位置
+    Vec2 aimLocation = _player->getPosition() + Vec2(offsetX,offsetY);
+    
+    //玩家所在的方格位置
+    Vec2 orginCoordLocation = tileCoordForPosition(_player->getPosition());
+    
+    //玩家所在方格的中心位置（像素值）
+    Vec2 tileGlPosition = positionForTileCoord(orginCoordLocation);
+    
+    //在行走到拐角的时候我们很容易卡住，在一定范围内，我们可以帮忙自动调整他的位置，使转弯更顺滑
+    //这四个变量用来判断这个转角的临界范围
+    //这算是对移动流畅度的优化
+    Vec2
+    shiftLeftUp = _player->getPosition() + amendLeftUp,
+    shiftLeftDown = _player->getPosition() + amendLeftDown,
+    shiftRightUp = _player->getPosition() + amendRightUp,
+    shiftRightDown = _player->getPosition() + amendRightDown;
+    
+    //这个变量用来我们来帮忙偏移的位置
+    Vec2 shiftLocation;
+    
+    //用刚才得到的两个碰撞检测点 来进行collidable函数检测
+    //如果碰撞了的话 我们来检测是否满足我们帮忙偏移的标准
+    //如果不满足 就return  结束函数 这就让玩家不移动
+    if(collidable(collidableTest1) || collidable(collidableTest2)){
+        //比如向左移动时候卡住了
+        //在一定范围内，我们帮忙move
+        //让他通过拐角
+        if (_keys[EventKeyboard::KeyCode::KEY_LEFT_ARROW] == true) {
+            
+            if(shiftLeftDown.y > tileGlPosition.y - 40
+               && shiftLeftDown.y < tileGlPosition.y - 20)
+            {
+                shiftLocation =_player->getPosition() + Vec2(0,3);
+                this->playerMover(shiftLocation);
+            }
+            
+        }else if(_keys[EventKeyboard::KeyCode::KEY_RIGHT_ARROW] == true){
+            
+            if(shiftRightDown.y > tileGlPosition.y - 40
+               && shiftLeftDown.y < tileGlPosition.y - 20)
+            {
+                shiftLocation =_player->getPosition() + Vec2(0,3);
+                this->playerMover(shiftLocation);
+            }
+            
+        }else if(_keys[EventKeyboard::KeyCode::KEY_UP_ARROW] == true){
+            if(shiftLeftUp.x > tileGlPosition.x - 40
+               && shiftLeftUp.x < tileGlPosition.x - 20)
+            {
+                
+                shiftLocation =_player->getPosition() + Vec2(3,0);
+                this->playerMover(shiftLocation);
+            }
+        }else if(_keys[EventKeyboard::KeyCode::KEY_DOWN_ARROW] == true){
+            if(shiftLeftDown.x > tileGlPosition.x - 40
+               && shiftLeftDown.x < tileGlPosition.x - 20)
+            {
+                shiftLocation =_player->getPosition() + Vec2(3,0);
+                this->playerMover(shiftLocation);
+            }
+        }
+        return;
+    }
+    //如果碰撞检测没有问题,那就运行进行move
+    this->playerMover(aimLocation);
+}
+
+bool Game::collidable(Vec2 tileCoord){
+    
+    for(int i = 0; i < _popVector.size(); i++){
+        //获取所有泡泡的位置，转换为TileCoord
+        Vec2 popPosition = _popVector.at(i)->getPosition();
+        Vec2 popPositionForTileMap = tileCoordForPosition(popPosition);
+        
+        //判断泡泡的位置是否与将要运动到的位置重合
+        if(tileCoord == popPositionForTileMap){
+            return true;
+        }
+        
+    }
+    
+    int tileGid = _collidable->getTileGIDAt(tileCoord);
+    if (tileGid) {
+        // 使用GID来查找指定tile的属性，返回一个Value
+        Value properties = _tileMap->getPropertiesForGID(tileGid);
+        // 返回的Value实际是一个ValueMap
+        ValueMap map = properties.asValueMap();
+        // 查找ValueMap，判断是否有”可碰撞的“物体，如果有，直接返回
+        std::string value = map.at("collidable").asString();
+        if (value.compare("true") == 0)
+            return true;
+        else
+            return false;
+    }
+}
+
+
