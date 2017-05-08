@@ -2,7 +2,7 @@
 //  GameScene.h
 //  MX1
 //
-//  Created by æå¤ on 2017/4/29.
+//  Created by ÀîÀ¤ on 2017/4/29.
 //
 //
 
@@ -19,60 +19,60 @@ USING_NS_CC;
 class Game : public cocos2d::Layer
 {
 private:
-    TMXTiledMap* _tileMap;
-    Sprite* _player;
-    
-    //å››ä¸ªä¸åŒçš„è´´å›¾ï¼Œåˆ†åˆ«ä¸ºå‘å·¦ã€å³ã€ä¸Šã€ä¸‹ç§»åŠ¨çš„è´´å›¾ï¼Œå½“å‘å¯¹åº”æ–¹å‘ç§»åŠ¨æ—¶ï¼Œç”¨æ­¤è´´å›¾è¿›è¡Œæ›¿æ¢
-    CCTexture2D *_player_texture_left;
-    CCTexture2D *_player_texture_right;
-    CCTexture2D *_player_texture_up;
-    CCTexture2D *_player_texture_down;
-    //layerçš„ç§ç±» ç”¨æ¥åˆ¤æ–­ç¢°æ’
-    TMXLayer* _collidable;
-    int _screenWidth, _screenHeight;
-    
-    //keysç”¨æ¥å¯¹é”®ç›˜ä¸ŠæŒ‰é”®è¿›è¡Œè®°å½•  è¿™æ˜¯ä¸€ä¸ªmapç±»å‹ trueè¡¨ç¤ºé”®ç›˜åœ¨ä¸€ç›´æŒ‰ç€ falseè¡¨ç¤ºæ¾å¼€
-    //å…·ä½“è¿™ä¸ªè¯·çœ‹å·¦å·¦çš„é”®ç›˜æ•™ç¨‹
-    std::map<cocos2d::EventKeyboard::KeyCode,bool> _keys;
-    Vector<Sprite* > _popVector;
+	TMXTiledMap* _tileMap;
+	Sprite* _player;
 
-    int _count; //æ¸¸æˆå¸§è®¡æ•°å™¨
+	//ËÄ¸ö²»Í¬µÄÌùÍ¼£¬·Ö±ğÎªÏò×ó¡¢ÓÒ¡¢ÉÏ¡¢ÏÂÒÆ¶¯µÄÌùÍ¼£¬µ±Ïò¶ÔÓ¦·½ÏòÒÆ¶¯Ê±£¬ÓÃ´ËÌùÍ¼½øĞĞÌæ»»
+	CCTexture2D *_player_texture_left;
+	CCTexture2D *_player_texture_right;
+	CCTexture2D *_player_texture_up;
+	CCTexture2D *_player_texture_down;
+	//layerµÄÖÖÀà ÓÃÀ´ÅĞ¶ÏÅö×²
+	TMXLayer* _collidable;
+	int _screenWidth, _screenHeight;
+
+	//keysÓÃÀ´¶Ô¼üÅÌÉÏ°´¼ü½øĞĞ¼ÇÂ¼  ÕâÊÇÒ»¸ömapÀàĞÍ true±íÊ¾¼üÅÌÔÚÒ»Ö±°´×Å false±íÊ¾ËÉ¿ª
+	//¾ßÌåÕâ¸öÇë¿´×ó×óµÄ¼üÅÌ½Ì³Ì
+	std::map<cocos2d::EventKeyboard::KeyCode, bool> _keys;
+	Vector<Sprite* > _popVector;
+
+	int _count; //ÓÎÏ·Ö¡¼ÆÊıÆ÷
 public:
-    static cocos2d::Scene* createScene();
-    virtual bool init();
-    
-    //ä¸¤ä¸ªåæ ‡ç³»ï¼Œæ¥ä¸‹æ¥çš„ä¸¤ä¸ªå‡½æ•°ç”¨æ¥è¿›è¡Œä¸¤ä¸ªåæ ‡ç³»çš„è½¬åŒ–
-    //ç¬¬ä¸€ä¸ªç”¨æ¥å®ç°åƒç´ åæ ‡å‘tileåæ ‡çš„è½¬æ¢ å¦‚600ï¼Œ600 --->15,15
-    Vec2 tileCoordForPosition(Vec2 position);
-    
-    //ç¬¬äºŒä¸ªç”¨æ¥è¿”å›æŒ‡å®šæ–¹æ ¼çš„ä¸­å¿ƒåæ ‡  é‡ç‚¹æ˜¯ä¸­å¿ƒï¼Œæ”¾ç½®æ³¡æ³¡æ—¶ä¼šç”¨åˆ°è¿™ä¸ª
-    Vec2 positionForTileCoord(const Vec2& tileCoord);
-    
-    //é€šè¿‡åŠ¨ç”»å¸§çš„åå­—ä»åŠ¨ç”»å¸§ç¼“å­˜ä¸­å¾—åˆ°å¹¶åˆ›å»ºåŠ¨ç”»
-    Animate* getAnimateByName(std::string animName, float delay, int animNum);
-    
-    //è®¡ç®—ç©å®¶ä»startPosç§»åŠ¨åˆ°endPosæ‰€èŠ±è´¹çš„æ—¶é—´
-    float getPlayerMoveTime(Vec2 startPos, Vec2 endPos);
-    
-    //ç©å®¶å°†ç§»åŠ¨position
-    void playerMover(Vec2 position);
-    
-    //åˆ¤æ–­é”®ç›˜æ˜¯å¦æŒ‰ä½ï¼Œè¯¦ç»†è¯·çœ‹å‘¨å·¦å·¦æ•™ç¨‹
-    bool isKeyPressed(EventKeyboard::KeyCode code);
-    
-    //åˆ¤æ–­ä¼ å…¥ä¸€ä¸ªåœ°å€ï¼Œåˆ¤æ–­è¿™ä¸ªåœ°å€æ˜¯å¦å¯ä»¥è¿›è¡Œç¢°æ’
-    bool collidable(Vec2 tileCoord);
-    
-    //é”®ç›˜åœ¨æŒ‰å‹æœŸé—´ä¼šå‘ç”Ÿçš„äº‹æƒ…  è¿™ä¸ªå‡½æ•°æœ‰å¾ˆå¤šæ“ä½œï¼Œcppé‡Œä¼šè¯¦ç»†è§£é‡Š
-    void keyPressedDuration(EventKeyboard::KeyCode code);
-    
-    //ç”»é¢æ›´æ–°å‡½æ•°
-    void update(float delta);
-    
-    //æ›´æ–°ä½ç½®
-    void updatePosition(float delta);
-    
-    CREATE_FUNC(Game);
+	static cocos2d::Scene* createScene();
+	virtual bool init();
+
+	//Á½¸ö×ø±êÏµ£¬½ÓÏÂÀ´µÄÁ½¸öº¯ÊıÓÃÀ´½øĞĞÁ½¸ö×ø±êÏµµÄ×ª»¯
+	//µÚÒ»¸öÓÃÀ´ÊµÏÖÏñËØ×ø±êÏòtile×ø±êµÄ×ª»» Èç600£¬600 --->15,15
+	Vec2 tileCoordForPosition(Vec2 position);
+
+	//µÚ¶ş¸öÓÃÀ´·µ»ØÖ¸¶¨·½¸ñµÄÖĞĞÄ×ø±ê  ÖØµãÊÇÖĞĞÄ£¬·ÅÖÃÅİÅİÊ±»áÓÃµ½Õâ¸ö
+	Vec2 positionForTileCoord(const Vec2& tileCoord);
+
+	//Í¨¹ı¶¯»­Ö¡µÄÃû×Ö´Ó¶¯»­Ö¡»º´æÖĞµÃµ½²¢´´½¨¶¯»­
+	Animate* getAnimateByName(std::string animName, float delay, int animNum);
+
+	//¼ÆËãÍæ¼Ò´ÓstartPosÒÆ¶¯µ½endPosËù»¨·ÑµÄÊ±¼ä
+	float getPlayerMoveTime(Vec2 startPos, Vec2 endPos);
+
+	//Íæ¼Ò½«ÒÆ¶¯position
+	void playerMover(Vec2 position);
+
+	//ÅĞ¶Ï¼üÅÌÊÇ·ñ°´×¡£¬ÏêÏ¸Çë¿´ÖÜ×ó×ó½Ì³Ì
+	bool isKeyPressed(EventKeyboard::KeyCode code);
+
+	//ÅĞ¶Ï´«ÈëÒ»¸öµØÖ·£¬ÅĞ¶ÏÕâ¸öµØÖ·ÊÇ·ñ¿ÉÒÔ½øĞĞÅö×²
+	bool collidable(Vec2 tileCoord);
+
+	//¼üÅÌÔÚ°´Ñ¹ÆÚ¼ä»á·¢ÉúµÄÊÂÇé  Õâ¸öº¯ÊıÓĞºÜ¶à²Ù×÷£¬cppÀï»áÏêÏ¸½âÊÍ
+	void keyPressedDuration(EventKeyboard::KeyCode code);
+
+	//»­Ãæ¸üĞÂº¯Êı
+	void update(float delta);
+
+	//¸üĞÂÎ»ÖÃ
+	void updatePosition(float delta);
+
+	CREATE_FUNC(Game);
 };
 
 

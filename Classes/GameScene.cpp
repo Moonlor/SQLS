@@ -5,422 +5,432 @@
 using namespace std;
 Scene* Game::createScene()
 {
-    auto scene = Scene::create();
-    auto layer = Game::create();
-    
-    scene->addChild(layer);
-    
-    return scene;
+	auto scene = Scene::create();
+	auto layer = Game::create();
+
+	scene->addChild(layer);
+
+	return scene;
 }
 
 bool Game::init()
 {
-    if(!Layer::init())
-    {
-        return false;
-    }
-    
-    //è·å¾—å±å¹•ï¼ˆçª—å£ï¼‰å¤§å°
-    Size visibleSize = Director::getInstance()->getVisibleSize();
-    //è·å¾—åæ ‡åŸç‚¹
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    
-    //è·å¾—å±å¹•ï¼ˆçª—å£ï¼‰å®½åº¦å’Œé«˜åº¦
-    _screenWidth = visibleSize.width;
-    _screenHeight = visibleSize.height;
-    
-    //é€šè¿‡åœ°å›¾åˆ›å»ºåœºæ™¯
-    _tileMap = TMXTiledMap::create("map.tmx");
-    //è®¾ç½®åœ°å›¾çš„é”šç‚¹ä¸ºå·¦ä¸‹è§’ï¼Œåˆ™åœ°å›¾Layerä¸Šçš„å­å…ƒç´ çš„åæ ‡åŸç‚¹ä¸ºï¼ˆ0ï¼Œ0ï¼‰
-    _tileMap->setAnchorPoint(Vec2::ZERO);
-    //è®¾ç½®åœ°å›¾çš„ä½ç½®ä¸ºå±å¹•çš„
-    _tileMap->setPosition(Vec2::ZERO + Vec2(origin.x, origin.y));
-    
-    this->addChild(_tileMap);
-    //è·å¾—åœ°å›¾ä¸­çš„collidableå±‚
-    _collidable = _tileMap->getLayer("collidable");
-    //è®©collidableå±‚å˜å¾—ä¸å¯è§
-    _collidable->setVisible(false);
-    
-    //åˆ›å»ºç©å®¶
-    _player = Sprite::create("player_down.png");
-    //è®¾ç½®ç©å®¶é”šç‚¹
-    _player->setAnchorPoint(Vec2(_player->getContentSize().width/2/_player->getContentSize().width,_tileMap->getTileSize().height/2 / _player->getContentSize().height));
-    //æŠŠç©å®¶æ”¾ç½®åœ¨åœ°å›¾å·¦ä¸‹è§’ï¼Œå³TileCoordä¸ºï¼ˆ1ï¼Œ1ï¼‰çš„æ ¼å­çš„ä¸­å¿ƒï¼›
-    _player->setPosition(origin.x + 60, 60  + origin.y);
-    
-    //ç©å®¶çš„zOrderä¸º2
-    _tileMap->addChild(_player, 2);
-    float x = _player->getPosition().x;
-    float y = _player->getPosition().y;
-    
-    //å°†å››ä¸ªæ–¹å‘çš„ç§»åŠ¨è´´å›¾åŠ å…¥ç¼“å­˜
-    _player_texture_left = CCTextureCache::sharedTextureCache()->addImage("player_left.png");
-    _player_texture_right = CCTextureCache::sharedTextureCache()->addImage("player_right.png");
-    _player_texture_up = CCTextureCache::sharedTextureCache()->addImage("player_up.png");
-    _player_texture_down = CCTextureCache::sharedTextureCache()->addImage("player_down.png");
-    
-    // åˆ›å»ºé”®ç›˜äº‹ä»¶ç›‘å¬å™¨
-    auto keyBoardListener = EventListenerKeyboard::create();
-    
-    //å½“æŸä¸ªé”®è¢«æŒ‰ä¸‹æ—¶ï¼Œmapä¸­å¯¹åº”è¿™ä¸ªé”®çš„å€¼è¢«è®¾ä¸ºtrueï¼ˆä¸ºä»€ä¹ˆè¿™æ ·åšå¯å‚è€ƒå·¦å·¦çš„æ–‡ç« 
-    keyBoardListener->onKeyPressed = [=](EventKeyboard::KeyCode code,Event* event){
-        _keys[code] = true;
-    };
-    //å½“æŸä¸ªé”®è¢«æ¾å¼€æ—¶ï¼Œmapä¸­å¯¹åº”è¿™ä¸ªé”®çš„å€¼è¢«è®¾ä¸ºfalse
-    keyBoardListener->onKeyReleased = [=](EventKeyboard::KeyCode code,Event* event){
-        _keys[code] = false;
-    };
-    
-    // å“åº”è§¦æ‘¸äº‹ä»¶å‡½æ•°
-    Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyBoardListener, this);
-    
-    this->scheduleUpdate();
-    
-    return true;
+	if (!Layer::init())
+	{
+		return false;
+	}
+
+	//»ñµÃÆÁÄ»£¨´°¿Ú£©´óĞ¡
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	//»ñµÃ×ø±êÔ­µã
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	//»ñµÃÆÁÄ»£¨´°¿Ú£©¿í¶ÈºÍ¸ß¶È
+	_screenWidth = visibleSize.width;
+	_screenHeight = visibleSize.height;
+
+	//Í¨¹ıµØÍ¼´´½¨³¡¾°
+	_tileMap = TMXTiledMap::create("map.tmx");
+	//ÉèÖÃµØÍ¼µÄÃªµãÎª×óÏÂ½Ç£¬ÔòµØÍ¼LayerÉÏµÄ×ÓÔªËØµÄ×ø±êÔ­µãÎª£¨0£¬0£©
+	_tileMap->setAnchorPoint(Vec2::ZERO);
+	//ÉèÖÃµØÍ¼µÄÎ»ÖÃÎªÆÁÄ»µÄ
+	_tileMap->setPosition(Vec2::ZERO + Vec2(origin.x, origin.y));
+
+	this->addChild(_tileMap);
+	//»ñµÃµØÍ¼ÖĞµÄcollidable²ã
+	_collidable = _tileMap->getLayer("collidable");
+	//ÈÃcollidable²ã±äµÃ²»¿É¼û
+	_collidable->setVisible(false);
+
+	//´´½¨Íæ¼Ò
+	_player = Sprite::create("player_down.png");
+	//ÉèÖÃÍæ¼ÒÃªµã
+	_player->setAnchorPoint(Vec2(_player->getContentSize().width / 2 / _player->getContentSize().width, _tileMap->getTileSize().height / 2 / _player->getContentSize().height));
+	//°ÑÍæ¼Ò·ÅÖÃÔÚµØÍ¼×óÏÂ½Ç£¬¼´TileCoordÎª£¨1£¬1£©µÄ¸ñ×ÓµÄÖĞĞÄ£»
+	_player->setPosition(origin.x + 60, 60 + origin.y);
+
+	//Íæ¼ÒµÄzOrderÎª2
+	_tileMap->addChild(_player, 2);
+	float x = _player->getPosition().x;
+	float y = _player->getPosition().y;
+
+	//½«ËÄ¸ö·½ÏòµÄÒÆ¶¯ÌùÍ¼¼ÓÈë»º´æ
+	_player_texture_left = CCTextureCache::sharedTextureCache()->addImage("player_left.png");
+	_player_texture_right = CCTextureCache::sharedTextureCache()->addImage("player_right.png");
+	_player_texture_up = CCTextureCache::sharedTextureCache()->addImage("player_up.png");
+	_player_texture_down = CCTextureCache::sharedTextureCache()->addImage("player_down.png");
+
+	// ´´½¨¼üÅÌÊÂ¼ş¼àÌıÆ÷
+	auto keyBoardListener = EventListenerKeyboard::create();
+
+	//µ±Ä³¸ö¼ü±»°´ÏÂÊ±£¬mapÖĞ¶ÔÓ¦Õâ¸ö¼üµÄÖµ±»ÉèÎªtrue£¨ÎªÊ²Ã´ÕâÑù×ö¿É²Î¿¼×ó×óµÄÎÄÕÂ
+	keyBoardListener->onKeyPressed = [=](EventKeyboard::KeyCode code, Event* event) {
+		_keys[code] = true;
+	};
+	//µ±Ä³¸ö¼ü±»ËÉ¿ªÊ±£¬mapÖĞ¶ÔÓ¦Õâ¸ö¼üµÄÖµ±»ÉèÎªfalse
+	keyBoardListener->onKeyReleased = [=](EventKeyboard::KeyCode code, Event* event) {
+		_keys[code] = false;
+	};
+
+	// ÏìÓ¦´¥ÃşÊÂ¼şº¯Êı
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(keyBoardListener, this);
+
+	this->scheduleUpdate();
+
+	return true;
 }
 
 
 Animate* Game::getAnimateByName(std::string animName, float delay, int animNum)
 {
-    //åˆ›å»ºä¸€ä¸ªåŠ¨ç”»
-    Animation* animation = Animation::create();
-    
-    //æŠŠåŠ¨ç”»å¸§åŠ å…¥åŠ¨ç”»
-    for(unsigned int i = 1; i <= animNum; i++){
-        std::string frameName = animName;
-        //åœ¨åŠ¨ç”»å¸§åç§°ååŠ ä¸Šåºå·
-        frameName.append(StringUtils::format("%d",i)).append(".png");
-        animation->addSpriteFrameWithFile(frameName.c_str());
-    }
-    
-    //è®¾ç½®åŠ¨ç”»å»¶æ—¶
-    animation->setDelayPerUnit(delay);
-    //åœ¨æ’­æ”¾å®ŒåŠ¨ç”»æ—¶æ¢å¤åˆ°åˆå§‹å¸§
-    animation->setRestoreOriginalFrame(true);
-    Animate* animate = Animate::create(animation);
-    
-    return animate;
-    
+	//´´½¨Ò»¸ö¶¯»­
+	Animation* animation = Animation::create();
+
+	//°Ñ¶¯»­Ö¡¼ÓÈë¶¯»­
+	for (unsigned int i = 1; i <= animNum; i++) {
+		std::string frameName = animName;
+		//ÔÚ¶¯»­Ö¡Ãû³Æºó¼ÓÉÏĞòºÅ
+		frameName.append(StringUtils::format("%d", i)).append(".png");
+		animation->addSpriteFrameWithFile(frameName.c_str());
+	}
+
+	//ÉèÖÃ¶¯»­ÑÓÊ±
+	animation->setDelayPerUnit(delay);
+	//ÔÚ²¥·ÅÍê¶¯»­Ê±»Ö¸´µ½³õÊ¼Ö¡
+	animation->setRestoreOriginalFrame(true);
+	Animate* animate = Animate::create(animation);
+
+	return animate;
+
 }
 
 
 Vec2 Game::tileCoordForPosition(Point position)
 {
-    
-    Size visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    
-    // CC_CONTENT_SCALE_FACTOR Retinaè¿”å›2ï¼Œå¦åˆ™è¿”å›1
-    // ç©å®¶ä½ç½®çš„xé™¤ä»¥åœ°å›¾çš„å®½ï¼Œå¾—åˆ°çš„æ˜¯åœ°å›¾æ¨ªå‘çš„ç¬¬å‡ ä¸ªæ ¼å­ï¼ˆtileï¼‰
-    // åœ°å›¾å®½è®¡ç®—ï¼š15[æ ¼å­] * 40[å›¾å—çš„å®½] = 600[åœ°å›¾å®½]
-    // å‡å¦‚ç²¾çµåœ¨çš„xåæ ‡æ˜¯60ï¼Œåˆ™ç²¾çµæ‰€åœ¨åœ°å›¾çš„æ ¼å­è®¡ç®—ï¼š60[ç²¾çµä½ç½®] / 40[å›¾å—çš„å®½] = 1 [æ ¼å­]
-    int x = (int)((position.x - origin.x )/ (_tileMap->getTileSize().width / CC_CONTENT_SCALE_FACTOR()));
-    float pointHeight = _tileMap->getTileSize().height / CC_CONTENT_SCALE_FACTOR();
-    int y = (int)((_tileMap->getMapSize().height * pointHeight - position.y) / pointHeight);
-    
-    return Vec2(x,y);
+
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	// CC_CONTENT_SCALE_FACTOR Retina·µ»Ø2£¬·ñÔò·µ»Ø1
+	// Íæ¼ÒÎ»ÖÃµÄx³ıÒÔµØÍ¼µÄ¿í£¬µÃµ½µÄÊÇµØÍ¼ºáÏòµÄµÚ¼¸¸ö¸ñ×Ó£¨tile£©
+	// µØÍ¼¿í¼ÆËã£º15[¸ñ×Ó] * 40[Í¼¿éµÄ¿í] = 600[µØÍ¼¿í]
+	// ¼ÙÈç¾«ÁéÔÚµÄx×ø±êÊÇ60£¬Ôò¾«ÁéËùÔÚµØÍ¼µÄ¸ñ×Ó¼ÆËã£º60[¾«ÁéÎ»ÖÃ] / 40[Í¼¿éµÄ¿í] = 1 [¸ñ×Ó]
+	int x = (int)((position.x - origin.x) / (_tileMap->getTileSize().width / CC_CONTENT_SCALE_FACTOR()));
+	float pointHeight = _tileMap->getTileSize().height / CC_CONTENT_SCALE_FACTOR();
+	int y = (int)((_tileMap->getMapSize().height * pointHeight - position.y) / pointHeight);
+
+	return Vec2(x, y);
 }
 
-Vec2 Game::positionForTileCoord(const cocos2d::Vec2 &tileCoord){
-    //å°†TileCoordè½¬æ¢ä¸ºtileMapçš„æ–¹æ ¼çš„ä¸­å¿ƒåæ ‡ï¼ˆå¦‚(1,1)è½¬ä¸º(60,60)ï¼‰
-    Size mapSize = _tileMap->getMapSize();
-    Size tileSize = _tileMap->getTileSize();
-    int x = tileCoord.x * tileSize.width + tileSize.width/2;
-    int y = (mapSize.height-tileCoord.y)*tileSize.height - tileSize.height/2;
-    return Vec2(x, y);
+Vec2 Game::positionForTileCoord(const cocos2d::Vec2 &tileCoord) {
+	//½«TileCoord×ª»»ÎªtileMapµÄ·½¸ñµÄÖĞĞÄ×ø±ê£¨Èç(1,1)×ªÎª(60,60)£©
+	Size mapSize = _tileMap->getMapSize();
+	Size tileSize = _tileMap->getTileSize();
+	int x = tileCoord.x * tileSize.width + tileSize.width / 2;
+	int y = (mapSize.height - tileCoord.y)*tileSize.height - tileSize.height / 2;
+	return Vec2(x, y);
 }
 
-// æ ¹æ®ç©å®¶ç§»åŠ¨è·ç¦»è®¡ç®—ç§»åŠ¨æ—¶é—´çš„æ–¹æ³•
-float Game::getPlayerMoveTime(Vec2 startPos, Vec2 endPos){
-    // å°†èµ·ç‚¹å’Œç»ˆç‚¹çš„åæ ‡è½¬æ¢ä¸ºTileMapåæ ‡
-    Vec2 tileStart = tileCoordForPosition(startPos);
-    Vec2 tileEnd = tileCoordForPosition(endPos);
-    // ç§»åŠ¨ä¸€ä¸ªç½‘æ ¼çš„æ—¶é—´
-    float duration = 0.4f;
-    // æ ¹æ®ç§»åŠ¨ç½‘æ ¼è®¡ç®—ç§»åŠ¨æ—¶é—´ï¼Œæ¨ªçºµåæ ‡å·®çš„å’Œè®¡ç®—å¹³æ–¹æ ¹
-    duration = duration * sqrtf((tileStart.x - tileEnd.x) * (tileStart.x - tileEnd.x)
-                                + (tileStart.y - tileEnd.y) * (tileStart.y - tileEnd.y));
-    return duration;
+// ¸ù¾İÍæ¼ÒÒÆ¶¯¾àÀë¼ÆËãÒÆ¶¯Ê±¼äµÄ·½·¨
+float Game::getPlayerMoveTime(Vec2 startPos, Vec2 endPos) {
+	// ½«ÆğµãºÍÖÕµãµÄ×ø±ê×ª»»ÎªTileMap×ø±ê
+	Vec2 tileStart = tileCoordForPosition(startPos);
+	Vec2 tileEnd = tileCoordForPosition(endPos);
+	// ÒÆ¶¯Ò»¸öÍø¸ñµÄÊ±¼ä
+	float duration = 0.4f;
+	// ¸ù¾İÒÆ¶¯Íø¸ñ¼ÆËãÒÆ¶¯Ê±¼ä£¬ºá×İ×ø±ê²îµÄºÍ¼ÆËãÆ½·½¸ù
+	duration = duration * sqrtf((tileStart.x - tileEnd.x) * (tileStart.x - tileEnd.x)
+		+ (tileStart.y - tileEnd.y) * (tileStart.y - tileEnd.y));
+	return duration;
 }
 
-//æ“çºµç©å®¶è¿›è¡Œç§»åŠ¨
-void Game::playerMover(Vec2 position){
-    //è·å¾—ç©å®¶çš„ç§»åŠ¨æ—¶é—´
-    float duration = getPlayerMoveTime(_player->getPosition(), position);
-    //å°†ç§»åŠ¨ç›®æ ‡çš„åæ ‡è½¬æ¢ä¸ºtileCoordåæ ‡ä¸‹çš„åæ ‡ï¼ˆæš‚æ—¶æ²¡æœ‰ç”¨åˆ°è¿™ä¸ªç»“æœï¼‰
-    Vec2 coord = tileCoordForPosition(position);
-    Vec2 mid = Vec2(coord.x * _tileMap->getTileSize().width , 600 - coord.y * _tileMap->getTileSize().height);
+//²Ù×İÍæ¼Ò½øĞĞÒÆ¶¯
+void Game::playerMover(Vec2 position) {
+	//»ñµÃÍæ¼ÒµÄÒÆ¶¯Ê±¼ä
+	float duration = getPlayerMoveTime(_player->getPosition(), position);
+	//½«ÒÆ¶¯Ä¿±êµÄ×ø±ê×ª»»ÎªtileCoord×ø±êÏÂµÄ×ø±ê£¨ÔİÊ±Ã»ÓĞÓÃµ½Õâ¸ö½á¹û£©
+	Vec2 coord = tileCoordForPosition(position);
+	Vec2 mid = Vec2(coord.x * _tileMap->getTileSize().width, 600 - coord.y * _tileMap->getTileSize().height);
 
-    auto moveTo = MoveTo::create(duration, position);
-    
-    _player->runAction(moveTo);
+	auto moveTo = MoveTo::create(duration, position);
+
+	_player->runAction(moveTo);
 }
 
-bool Game::isKeyPressed(EventKeyboard::KeyCode code){
-    return _keys[code];
+bool Game::isKeyPressed(EventKeyboard::KeyCode code) {
+	return _keys[code];
 }
 
-//æ¯å¸§éƒ½è°ƒç”¨è¿™ä¸ªå‡½æ•°ï¼Œæ›´æ–°ç©å®¶ä½ç½®ï¼Œå¹¶åˆ¤æ–­æ˜¯å¦æ”¾ä¸‹æ°´æ³¡
-void Game::updatePosition(float delta){
-    //å­˜å‚¨å››ä¸ªæ–¹å‘é”®å’Œç©ºæ ¼é”®çš„å¯¹åº”çš„æ ‡è¯†
-    auto
-    leftArrow = EventKeyboard::KeyCode::KEY_LEFT_ARROW,
-    rightArrow = EventKeyboard::KeyCode::KEY_RIGHT_ARROW,
-    upArrow = EventKeyboard::KeyCode::KEY_UP_ARROW,
-    downArrow = EventKeyboard::KeyCode::KEY_DOWN_ARROW,
-    space = EventKeyboard::KeyCode::KEY_SPACE;
-    //åªè¦æœ‰ä»»ä½•ä¸€ä¸ªæ–¹å‘é”®è¢«æŒ‰ä¸‹äº†ï¼Œany_arrowéƒ½ä¸ä¸ºfalse
-    int any_arrow = isKeyPressed(leftArrow) + isKeyPressed(rightArrow) + isKeyPressed(upArrow) + isKeyPressed(downArrow);
-    
-    //å¦‚æœåŒæ—¶æŒ‰ä¸‹æ–¹å‘é”®å’Œç©ºæ ¼é”®ï¼Œåˆ™æ”¾ä¸‹ä¸€ä¸ªæ°´æ³¡
-    if((isKeyPressed(space) && any_arrow)){
-        keyPressedDuration(space);
-        _keys[space] = false;
-    }
-    //å¦‚æœæŒ‰ä¸‹æ–¹å‘é”®ï¼Œåˆ™ç©å®¶è¿›è¡Œç§»åŠ¨ï¼Œåˆ™è¿›è¡Œç§»åŠ¨åˆ¤æ–­ï¼Œå¦‚æœåªæŒ‰ä¸‹ç©ºæ ¼é”®ï¼Œåˆ™ç©å®¶æ”¾ä¸‹ä¸€ä¸ªæ°´æ³¡
-    if(isKeyPressed(leftArrow)) {
-        keyPressedDuration(leftArrow);
-    } else if(isKeyPressed(rightArrow)) {
-        keyPressedDuration(rightArrow);
-    } else if(isKeyPressed(upArrow)) {
-        keyPressedDuration(upArrow);
-    } else if(isKeyPressed(downArrow)) {
-        keyPressedDuration(downArrow);
-    } else if(isKeyPressed(space)){
-        keyPressedDuration(space);
-    }
+//Ã¿Ö¡¶¼µ÷ÓÃÕâ¸öº¯Êı£¬¸üĞÂÍæ¼ÒÎ»ÖÃ£¬²¢ÅĞ¶ÏÊÇ·ñ·ÅÏÂË®Åİ
+void Game::updatePosition(float delta) {
+	//´æ´¢ËÄ¸ö·½Ïò¼üºÍ¿Õ¸ñ¼üµÄ¶ÔÓ¦µÄ±êÊ¶
+	auto
+		leftArrow = EventKeyboard::KeyCode::KEY_LEFT_ARROW,
+		rightArrow = EventKeyboard::KeyCode::KEY_RIGHT_ARROW,
+		upArrow = EventKeyboard::KeyCode::KEY_UP_ARROW,
+		downArrow = EventKeyboard::KeyCode::KEY_DOWN_ARROW,
+		space = EventKeyboard::KeyCode::KEY_SPACE;
+	//Ö»ÒªÓĞÈÎºÎÒ»¸ö·½Ïò¼ü±»°´ÏÂÁË£¬any_arrow¶¼²»Îªfalse
+	int any_arrow = isKeyPressed(leftArrow) + isKeyPressed(rightArrow) + isKeyPressed(upArrow) + isKeyPressed(downArrow);
+
+	//Èç¹ûÍ¬Ê±°´ÏÂ·½Ïò¼üºÍ¿Õ¸ñ¼ü£¬Ôò·ÅÏÂÒ»¸öË®Åİ
+	if ((isKeyPressed(space) && any_arrow)) {
+		keyPressedDuration(space);
+		_keys[space] = false;
+	}
+	//Èç¹û°´ÏÂ·½Ïò¼ü£¬ÔòÍæ¼Ò½øĞĞÒÆ¶¯£¬Ôò½øĞĞÒÆ¶¯ÅĞ¶Ï£¬Èç¹ûÖ»°´ÏÂ¿Õ¸ñ¼ü£¬ÔòÍæ¼Ò·ÅÏÂÒ»¸öË®Åİ
+	if (isKeyPressed(leftArrow)) {
+		keyPressedDuration(leftArrow);
+	}
+	else if (isKeyPressed(rightArrow)) {
+		keyPressedDuration(rightArrow);
+	}
+	else if (isKeyPressed(upArrow)) {
+		keyPressedDuration(upArrow);
+	}
+	else if (isKeyPressed(downArrow)) {
+		keyPressedDuration(downArrow);
+	}
+	else if (isKeyPressed(space)) {
+		keyPressedDuration(space);
+	}
 }
 
-void Game::update(float delta){
-    Node::update(delta);
-    //æ›´æ–°ç©å®¶ä½ç½®ï¼Œå¹¶åˆ¤æ–­æ˜¯å¦æ”¾ä¸‹æ°´æ³¡
-    updatePosition(delta);
+void Game::update(float delta) {
+	Node::update(delta);
+	//¸üĞÂÍæ¼ÒÎ»ÖÃ£¬²¢ÅĞ¶ÏÊÇ·ñ·ÅÏÂË®Åİ
+	updatePosition(delta);
 
 }
 
 
-void Game::keyPressedDuration(EventKeyboard::KeyCode code){
-    //è®¾ç½®åç§»çš„æ•°é‡ï¼Œå°±æ˜¯æ¯ä¸€å¸§å‘å‰èµ°çš„åƒç´ ç‚¹ï¼Œä¿®æ”¹å®ƒä¼šä¿®æ”¹é€Ÿåº¦
-    //è·Ÿå‘¨å·¦å·¦æ•™ç¨‹é‡Œç”¨çš„åŸç†ç›¸åŒ
-    int offsetX = 0, offsetY = 0;
-    //è¿™å››ä¸ªå€¼æ˜¯ç”¨æ¥åšç¢°æ’æ£€æµ‹  è¡¥å……åªèƒ½æ£€æµ‹è±å½¢çš„ä¸è¶³
-    float
-    collidableAmendLeftX = 0,
-    collidableAmendRightX = 0,
-    collidableAmendUpY = 0,
-    collidableAmendDownY = 0;
-    
-    //è®¾ç½®Textureçš„å€¼
-    if (_keys[EventKeyboard::KeyCode::KEY_LEFT_ARROW] == true) {
-        _player->setTexture(_player_texture_left);
-    }else if(_keys[EventKeyboard::KeyCode::KEY_RIGHT_ARROW] == true){
-        _player->setTexture(_player_texture_right);
-    }else if(_keys[EventKeyboard::KeyCode::KEY_UP_ARROW] == true){
-        _player->setTexture(_player_texture_up);
-    }else if(_keys[EventKeyboard::KeyCode::KEY_DOWN_ARROW] == true){
-        _player->setTexture(_player_texture_down);
-    }
-    
-    //æ£€æµ‹è¡Œèµ°æ–¹å‘ï¼Œå¹¶æ ¹æ®ä¸åŒçš„æ–¹å‘ç¡®å®šåç§»å€¼ä¸æ£€æµ‹ç¢°æ’çš„å€¼
-    //æ‹¿ç¬¬ä¸€ä¸ªcaseä¸¾ä¾‹
-    //æ¯”å¦‚å‘å·¦èµ°çš„æ—¶å€™ æˆ‘åªè¦ç¡®å®šä¸€ä¸ªå·¦ä¸Šè·Ÿå·¦ä¸‹ä¸¤ä¸ªç‚¹çš„å€¼å°±å¯ä»¥äº†
-    switch (code) {
-            //case1 å½“æŒ‰é”®ä¸ºLeftæ—¶  è¯´æ˜æ­¤æ—¶é—´äººç‰©å‘å·¦èµ°
-        case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-            offsetX = -2;
-            collidableAmendLeftX  = - _player->getContentSize().width / 2 ;  //æˆ‘èƒ½çŸ¥é“çš„åªæ˜¯playerä¸­å¿ƒç‚¹çš„åæ ‡  æŠŠä¸‰ä¸ªå€¼æ˜¯åŠ èµ·æ¥ç¡®å®šåç§»çš„ä¸¤ä¸ªç‚¹
-            collidableAmendUpY = _tileMap->getTileSize().height / 2 - 6;    // +6 +4 æ˜¯ä¸è¦ç”¨æ¥åˆ¤æ–­æ­£æ–¹å½¢çš„ç«¯ç‚¹
-            collidableAmendDownY = - _tileMap->getTileSize().height / 2 + 4;
-            break;
-        case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-            offsetX = 2;
-            collidableAmendRightX = _player->getContentSize().width / 2;
-            collidableAmendUpY = _tileMap->getTileSize().height / 2 - 6;
-            collidableAmendDownY = - _tileMap->getTileSize().height / 2 + 4;
-            break;
-        case EventKeyboard::KeyCode::KEY_UP_ARROW:
-            offsetY = 2;
-            collidableAmendUpY = _tileMap->getTileSize().height / 2 ;
-            collidableAmendLeftX = - _player->getContentSize().width / 2 + 6;
-            collidableAmendRightX = _player->getContentSize().width / 2 - 6;
-            break;
-        case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-            offsetY = -2;
-            collidableAmendLeftX = - _player->getContentSize().width / 2 + 6;
-            collidableAmendRightX = _player->getContentSize().width / 2 - 6;
-            collidableAmendDownY = - _tileMap->getTileSize().height / 2 - 3;
-            break;
-        case EventKeyboard::KeyCode::KEY_SPACE:{
-            //è·å–ç©å®¶çš„ä½ç½®
-            Vec2 _tilePlayer = tileCoordForPosition(_player->getPosition());
-            Vec2 _popPosition = positionForTileCoord(_tilePlayer);
-            
-            //åˆ›å»ºä¸€ä¸ªæ³¡æ³¡ï¼Œæ”¾ç½®åœ¨ç©å®¶æ‰€åœ¨æ ¼å­çš„ä¸­å¿ƒ
-            Sprite* pop = Sprite::create("pop.png");
-            pop->setPosition(_popPosition);
-            
-            //æ³¡æ³¡çš„zorderè¦æ¯”ç©å®¶ä½
-            _tileMap->addChild(pop, 1);
-            
-            //ä»æ³¡æ³¡è¢«æ”¾å…¥vectoråˆ°æ³¡æ³¡çˆ†ç‚¸çš„å»¶æ—¶
-            DelayTime * _delayDelete = DelayTime::create(2.5f);
-            //ä»æ³¡æ³¡æ”¾ç½®åˆ°æ³¡æ³¡è¢«æ”¾å…¥æ³¡æ³¡vectorçš„å»¶æ—¶
-            DelayTime * _delayPush = DelayTime::create(0.5f);
-            auto callFunc1 = CallFunc::create([=]{
-                _popVector.pushBack(pop);
-            });
-            auto callFunc2 = CallFunc::create([=]{
-                //æ³¡æ³¡çˆ†ç‚¸æ—¶ï¼Œè·å–åœ°å›¾ä¸Šç°å­˜çš„ç¬¬ä¸€ä¸ªè¢«æ”¾ç½®çš„æ³¡æ³¡å¹¶åˆ é™¤å®ƒ
-                auto pop = _popVector.at(0);
-                _tileMap->removeChild(pop);
-                _popVector.eraseObject(pop);
-            });
-            //åˆ›å»ºä¸€ä¸ªåºåˆ—åŠ¨ä½œï¼Œæ”¾ç½®æ³¡æ³¡->æ³¡æ³¡åŠ å…¥æ³¡æ³¡vector->æ³¡æ³¡çˆ†ç‚¸
-            auto action = Sequence::create(_delayPush,callFunc1,_delayDelete,callFunc2 ,NULL);
-            pop->runAction(action);
-            
-            break;
-        }
-        default:
-            offsetY = offsetX = 0;
-            break;
-    }
-    
-    
-    
-    //ç”¨æ¥åšç¢°æ’æ£€æµ‹çš„å››ä¸ªç‚¹, åˆ†è¾¨ä»£è¡¨å››ä¸ªè§’ å·¦ä¸Šï¼Œå·¦ä¸‹ï¼Œå³ä¸Šï¼Œå³ä¸‹  æ³¨æ„è¿™ä¸ªæ˜¯ä¸ªåç§»é‡  è¿˜ä¸æ˜¯æˆ‘ä»¬è¦ç¡®å®šçš„ä¸¤ä¸ªæ£€æµ‹ç‚¹
-    Vec2 amendLeftUp = Vec2(offsetX + collidableAmendLeftX ,offsetY + collidableAmendUpY),
-    amendLeftDown = Vec2(offsetX + collidableAmendLeftX ,offsetY + collidableAmendDownY),
-    amendRightUp = Vec2(offsetX + collidableAmendRightX ,offsetY + collidableAmendUpY),
-    amendRightDown = Vec2(offsetX + collidableAmendRightX,offsetY + collidableAmendDownY);
-    
-    //å³å°†è¦åšç¢°æ’æ£€æµ‹çš„ä¸¤ä¸ªç‚¹, ç”¨åˆšæ‰æ ¹æ®æ–¹å‘ç¡®å®šçš„ç¢°æ’å€¼æ¥åˆå§‹åŒ–ä¸¤ä¸ªç‚¹   åˆ°ç°åœ¨ç»ˆäºæ‰¾å‡ºæ¥ç¡®å®šç¢°æ’çš„ä¸¤ä¸ªç‚¹äº†  å‘œå‘œå‘œ
-    Vec2 collidableTest1, collidableTest2;
-    
-    switch (code) {
-        case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-            collidableTest1 = tileCoordForPosition(_player->getPosition() + amendLeftUp);
-            
-            collidableTest2 = tileCoordForPosition(_player->getPosition() + amendLeftDown);
-            break;
-        case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-            collidableTest1 = tileCoordForPosition(_player->getPosition() + amendRightUp);
-            collidableTest2 = tileCoordForPosition(_player->getPosition() + amendRightDown);
-            
-            break;
-        case EventKeyboard::KeyCode::KEY_UP_ARROW:
-            
-            collidableTest1 = tileCoordForPosition(_player->getPosition() + amendLeftUp);
-            collidableTest2 = tileCoordForPosition(_player->getPosition() + amendRightUp);
-            break;
-        case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-            
-            collidableTest1 = tileCoordForPosition(_player->getPosition() + amendLeftDown);
-            collidableTest2 = tileCoordForPosition(_player->getPosition() + amendRightDown);
-            break;
-            
-        default:
-            offsetY = offsetX = 0;
-            break;
-    }
-    
-    
-    //ç›®æ ‡ä½ç½® å¦‚æœæ¥ä¸‹æ¥çš„ç¢°æ’æ£€æµ‹æ²¡é—®é¢˜ï¼Œplayerå°±ä¼šmoveåˆ°è¿™ä¸ªä½ç½®
-    Vec2 aimLocation = _player->getPosition() + Vec2(offsetX,offsetY);
-    
-    //ç©å®¶æ‰€åœ¨çš„æ–¹æ ¼ä½ç½®
-    Vec2 orginCoordLocation = tileCoordForPosition(_player->getPosition());
-    
-    //ç©å®¶æ‰€åœ¨æ–¹æ ¼çš„ä¸­å¿ƒä½ç½®ï¼ˆåƒç´ å€¼ï¼‰
-    Vec2 tileGlPosition = positionForTileCoord(orginCoordLocation);
-    
-    //åœ¨è¡Œèµ°åˆ°æ‹è§’çš„æ—¶å€™æˆ‘ä»¬å¾ˆå®¹æ˜“å¡ä½ï¼Œåœ¨ä¸€å®šèŒƒå›´å†…ï¼Œæˆ‘ä»¬å¯ä»¥å¸®å¿™è‡ªåŠ¨è°ƒæ•´ä»–çš„ä½ç½®ï¼Œä½¿è½¬å¼¯æ›´é¡ºæ»‘
-    //è¿™å››ä¸ªå˜é‡ç”¨æ¥åˆ¤æ–­è¿™ä¸ªè½¬è§’çš„ä¸´ç•ŒèŒƒå›´
-    //è¿™ç®—æ˜¯å¯¹ç§»åŠ¨æµç•…åº¦çš„ä¼˜åŒ–
-    Vec2
-    shiftLeftUp = _player->getPosition() + amendLeftUp,
-    shiftLeftDown = _player->getPosition() + amendLeftDown,
-    shiftRightUp = _player->getPosition() + amendRightUp,
-    shiftRightDown = _player->getPosition() + amendRightDown;
-    
-    //è¿™ä¸ªå˜é‡ç”¨æ¥æˆ‘ä»¬æ¥å¸®å¿™åç§»çš„ä½ç½®
-    Vec2 shiftLocation;
-    
-    //ç”¨åˆšæ‰å¾—åˆ°çš„ä¸¤ä¸ªç¢°æ’æ£€æµ‹ç‚¹ æ¥è¿›è¡Œcollidableå‡½æ•°æ£€æµ‹
-    //å¦‚æœç¢°æ’äº†çš„è¯ æˆ‘ä»¬æ¥æ£€æµ‹æ˜¯å¦æ»¡è¶³æˆ‘ä»¬å¸®å¿™åç§»çš„æ ‡å‡†
-    //å¦‚æœä¸æ»¡è¶³ å°±return  ç»“æŸå‡½æ•° è¿™å°±è®©ç©å®¶ä¸ç§»åŠ¨
-    if(collidable(collidableTest1) || collidable(collidableTest2)){
-        //æ¯”å¦‚å‘å·¦ç§»åŠ¨æ—¶å€™å¡ä½äº†
-        //åœ¨ä¸€å®šèŒƒå›´å†…ï¼Œæˆ‘ä»¬å¸®å¿™move
-        //è®©ä»–é€šè¿‡æ‹è§’
-        if (_keys[EventKeyboard::KeyCode::KEY_LEFT_ARROW] == true) {
-            
-            if(shiftLeftDown.y > tileGlPosition.y - 40
-               && shiftLeftDown.y < tileGlPosition.y - 20)
-            {
-                shiftLocation =_player->getPosition() + Vec2(0,3);
-                this->playerMover(shiftLocation);
-            }
-            
-        }else if(_keys[EventKeyboard::KeyCode::KEY_RIGHT_ARROW] == true){
-            
-            if(shiftRightDown.y > tileGlPosition.y - 40
-               && shiftLeftDown.y < tileGlPosition.y - 20)
-            {
-                shiftLocation =_player->getPosition() + Vec2(0,3);
-                this->playerMover(shiftLocation);
-            }
-            
-        }else if(_keys[EventKeyboard::KeyCode::KEY_UP_ARROW] == true){
-            if(shiftLeftUp.x > tileGlPosition.x - 40
-               && shiftLeftUp.x < tileGlPosition.x - 20)
-            {
-                
-                shiftLocation =_player->getPosition() + Vec2(3,0);
-                this->playerMover(shiftLocation);
-            }
-        }else if(_keys[EventKeyboard::KeyCode::KEY_DOWN_ARROW] == true){
-            if(shiftLeftDown.x > tileGlPosition.x - 40
-               && shiftLeftDown.x < tileGlPosition.x - 20)
-            {
-                shiftLocation =_player->getPosition() + Vec2(3,0);
-                this->playerMover(shiftLocation);
-            }
-        }
-        return;
-    }
-    //å¦‚æœç¢°æ’æ£€æµ‹æ²¡æœ‰é—®é¢˜,é‚£å°±è¿è¡Œè¿›è¡Œmove
-    this->playerMover(aimLocation);
+void Game::keyPressedDuration(EventKeyboard::KeyCode code) {
+	//ÉèÖÃÆ«ÒÆµÄÊıÁ¿£¬¾ÍÊÇÃ¿Ò»Ö¡ÏòÇ°×ßµÄÏñËØµã£¬ĞŞ¸ÄËü»áĞŞ¸ÄËÙ¶È
+	//¸úÖÜ×ó×ó½Ì³ÌÀïÓÃµÄÔ­ÀíÏàÍ¬
+	int offsetX = 0, offsetY = 0;
+	//ÕâËÄ¸öÖµÊÇÓÃÀ´×öÅö×²¼ì²â  ²¹³äÖ»ÄÜ¼ì²âÁâĞÎµÄ²»×ã
+	float
+		collidableAmendLeftX = 0,
+		collidableAmendRightX = 0,
+		collidableAmendUpY = 0,
+		collidableAmendDownY = 0;
+
+	//ÉèÖÃTextureµÄÖµ
+	if (_keys[EventKeyboard::KeyCode::KEY_LEFT_ARROW] == true) {
+		_player->setTexture(_player_texture_left);
+	}
+	else if (_keys[EventKeyboard::KeyCode::KEY_RIGHT_ARROW] == true) {
+		_player->setTexture(_player_texture_right);
+	}
+	else if (_keys[EventKeyboard::KeyCode::KEY_UP_ARROW] == true) {
+		_player->setTexture(_player_texture_up);
+	}
+	else if (_keys[EventKeyboard::KeyCode::KEY_DOWN_ARROW] == true) {
+		_player->setTexture(_player_texture_down);
+	}
+
+	//¼ì²âĞĞ×ß·½Ïò£¬²¢¸ù¾İ²»Í¬µÄ·½ÏòÈ·¶¨Æ«ÒÆÖµÓë¼ì²âÅö×²µÄÖµ
+	//ÄÃµÚÒ»¸öcase¾ÙÀı
+	//±ÈÈçÏò×ó×ßµÄÊ±ºò ÎÒÖ»ÒªÈ·¶¨Ò»¸ö×óÉÏ¸ú×óÏÂÁ½¸öµãµÄÖµ¾Í¿ÉÒÔÁË
+	switch (code) {
+		//case1 µ±°´¼üÎªLeftÊ±  ËµÃ÷´ËÊ±¼äÈËÎïÏò×ó×ß
+	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		offsetX = -2;
+		collidableAmendLeftX = -_player->getContentSize().width / 2;  //ÎÒÄÜÖªµÀµÄÖ»ÊÇplayerÖĞĞÄµãµÄ×ø±ê  °ÑÈı¸öÖµÊÇ¼ÓÆğÀ´È·¶¨Æ«ÒÆµÄÁ½¸öµã
+		collidableAmendUpY = _tileMap->getTileSize().height / 2 - 6;    // +6 +4 ÊÇ²»ÒªÓÃÀ´ÅĞ¶ÏÕı·½ĞÎµÄ¶Ëµã
+		collidableAmendDownY = -_tileMap->getTileSize().height / 2 + 4;
+		break;
+	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		offsetX = 2;
+		collidableAmendRightX = _player->getContentSize().width / 2;
+		collidableAmendUpY = _tileMap->getTileSize().height / 2 - 6;
+		collidableAmendDownY = -_tileMap->getTileSize().height / 2 + 4;
+		break;
+	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+		offsetY = 2;
+		collidableAmendUpY = _tileMap->getTileSize().height / 2;
+		collidableAmendLeftX = -_player->getContentSize().width / 2 + 6;
+		collidableAmendRightX = _player->getContentSize().width / 2 - 6;
+		break;
+	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		offsetY = -2;
+		collidableAmendLeftX = -_player->getContentSize().width / 2 + 6;
+		collidableAmendRightX = _player->getContentSize().width / 2 - 6;
+		collidableAmendDownY = -_tileMap->getTileSize().height / 2 - 3;
+		break;
+	case EventKeyboard::KeyCode::KEY_SPACE: {
+		//»ñÈ¡Íæ¼ÒµÄÎ»ÖÃ
+		Vec2 _tilePlayer = tileCoordForPosition(_player->getPosition());
+		Vec2 _popPosition = positionForTileCoord(_tilePlayer);
+
+		//´´½¨Ò»¸öÅİÅİ£¬·ÅÖÃÔÚÍæ¼ÒËùÔÚ¸ñ×ÓµÄÖĞĞÄ
+		Sprite* pop = Sprite::create("pop.png");
+		pop->setPosition(_popPosition);
+
+		//ÅİÅİµÄzorderÒª±ÈÍæ¼ÒµÍ
+		_tileMap->addChild(pop, 1);
+
+		//´ÓÅİÅİ±»·ÅÈëvectorµ½ÅİÅİ±¬Õ¨µÄÑÓÊ±
+		DelayTime * _delayDelete = DelayTime::create(2.5f);
+		//´ÓÅİÅİ·ÅÖÃµ½ÅİÅİ±»·ÅÈëÅİÅİvectorµÄÑÓÊ±
+		DelayTime * _delayPush = DelayTime::create(0.5f);
+		auto callFunc1 = CallFunc::create([=] {
+			_popVector.pushBack(pop);
+		});
+		auto callFunc2 = CallFunc::create([=] {
+			//ÅİÅİ±¬Õ¨Ê±£¬»ñÈ¡µØÍ¼ÉÏÏÖ´æµÄµÚÒ»¸ö±»·ÅÖÃµÄÅİÅİ²¢É¾³ıËü
+			auto pop = _popVector.at(0);
+			_tileMap->removeChild(pop);
+			_popVector.eraseObject(pop);
+		});
+		//´´½¨Ò»¸öĞòÁĞ¶¯×÷£¬·ÅÖÃÅİÅİ->ÅİÅİ¼ÓÈëÅİÅİvector->ÅİÅİ±¬Õ¨
+		auto action = Sequence::create(_delayPush, callFunc1, _delayDelete, callFunc2, NULL);
+		pop->runAction(action);
+
+		break;
+	}
+	default:
+		offsetY = offsetX = 0;
+		break;
+	}
+
+
+
+	//ÓÃÀ´×öÅö×²¼ì²âµÄËÄ¸öµã, ·Ö±æ´ú±íËÄ¸ö½Ç ×óÉÏ£¬×óÏÂ£¬ÓÒÉÏ£¬ÓÒÏÂ  ×¢ÒâÕâ¸öÊÇ¸öÆ«ÒÆÁ¿  »¹²»ÊÇÎÒÃÇÒªÈ·¶¨µÄÁ½¸ö¼ì²âµã
+	Vec2 amendLeftUp = Vec2(offsetX + collidableAmendLeftX, offsetY + collidableAmendUpY),
+		amendLeftDown = Vec2(offsetX + collidableAmendLeftX, offsetY + collidableAmendDownY),
+		amendRightUp = Vec2(offsetX + collidableAmendRightX, offsetY + collidableAmendUpY),
+		amendRightDown = Vec2(offsetX + collidableAmendRightX, offsetY + collidableAmendDownY);
+
+	//¼´½«Òª×öÅö×²¼ì²âµÄÁ½¸öµã, ÓÃ¸Õ²Å¸ù¾İ·½ÏòÈ·¶¨µÄÅö×²ÖµÀ´³õÊ¼»¯Á½¸öµã   µ½ÏÖÔÚÖÕÓÚÕÒ³öÀ´È·¶¨Åö×²µÄÁ½¸öµãÁË  ÎØÎØÎØ
+	Vec2 collidableTest1, collidableTest2;
+
+	switch (code) {
+	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		collidableTest1 = tileCoordForPosition(_player->getPosition() + amendLeftUp);
+
+		collidableTest2 = tileCoordForPosition(_player->getPosition() + amendLeftDown);
+		break;
+	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		collidableTest1 = tileCoordForPosition(_player->getPosition() + amendRightUp);
+		collidableTest2 = tileCoordForPosition(_player->getPosition() + amendRightDown);
+
+		break;
+	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+
+		collidableTest1 = tileCoordForPosition(_player->getPosition() + amendLeftUp);
+		collidableTest2 = tileCoordForPosition(_player->getPosition() + amendRightUp);
+		break;
+	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+
+		collidableTest1 = tileCoordForPosition(_player->getPosition() + amendLeftDown);
+		collidableTest2 = tileCoordForPosition(_player->getPosition() + amendRightDown);
+		break;
+
+	default:
+		offsetY = offsetX = 0;
+		break;
+	}
+
+
+	//Ä¿±êÎ»ÖÃ Èç¹û½ÓÏÂÀ´µÄÅö×²¼ì²âÃ»ÎÊÌâ£¬player¾Í»ámoveµ½Õâ¸öÎ»ÖÃ
+	Vec2 aimLocation = _player->getPosition() + Vec2(offsetX, offsetY);
+
+	//Íæ¼ÒËùÔÚµÄ·½¸ñÎ»ÖÃ
+	Vec2 orginCoordLocation = tileCoordForPosition(_player->getPosition());
+
+	//Íæ¼ÒËùÔÚ·½¸ñµÄÖĞĞÄÎ»ÖÃ£¨ÏñËØÖµ£©
+	Vec2 tileGlPosition = positionForTileCoord(orginCoordLocation);
+
+	//ÔÚĞĞ×ßµ½¹Õ½ÇµÄÊ±ºòÎÒÃÇºÜÈİÒ×¿¨×¡£¬ÔÚÒ»¶¨·¶Î§ÄÚ£¬ÎÒÃÇ¿ÉÒÔ°ïÃ¦×Ô¶¯µ÷ÕûËûµÄÎ»ÖÃ£¬Ê¹×ªÍä¸üË³»¬
+	//ÕâËÄ¸ö±äÁ¿ÓÃÀ´ÅĞ¶ÏÕâ¸ö×ª½ÇµÄÁÙ½ç·¶Î§
+	//ÕâËãÊÇ¶ÔÒÆ¶¯Á÷³©¶ÈµÄÓÅ»¯
+	Vec2
+		shiftLeftUp = _player->getPosition() + amendLeftUp,
+		shiftLeftDown = _player->getPosition() + amendLeftDown,
+		shiftRightUp = _player->getPosition() + amendRightUp,
+		shiftRightDown = _player->getPosition() + amendRightDown;
+
+	//Õâ¸ö±äÁ¿ÓÃÀ´ÎÒÃÇÀ´°ïÃ¦Æ«ÒÆµÄÎ»ÖÃ
+	Vec2 shiftLocation;
+
+	//ÓÃ¸Õ²ÅµÃµ½µÄÁ½¸öÅö×²¼ì²âµã À´½øĞĞcollidableº¯Êı¼ì²â
+	//Èç¹ûÅö×²ÁËµÄ»° ÎÒÃÇÀ´¼ì²âÊÇ·ñÂú×ãÎÒÃÇ°ïÃ¦Æ«ÒÆµÄ±ê×¼
+	//Èç¹û²»Âú×ã ¾Íreturn  ½áÊøº¯Êı Õâ¾ÍÈÃÍæ¼Ò²»ÒÆ¶¯
+	if (collidable(collidableTest1) || collidable(collidableTest2)) {
+		//±ÈÈçÏò×óÒÆ¶¯Ê±ºò¿¨×¡ÁË
+		//ÔÚÒ»¶¨·¶Î§ÄÚ£¬ÎÒÃÇ°ïÃ¦move
+		//ÈÃËûÍ¨¹ı¹Õ½Ç
+		if (_keys[EventKeyboard::KeyCode::KEY_LEFT_ARROW] == true) {
+
+			if (shiftLeftDown.y > tileGlPosition.y - 40
+				&& shiftLeftDown.y < tileGlPosition.y - 20)
+			{
+				shiftLocation = _player->getPosition() + Vec2(0, 3);
+				this->playerMover(shiftLocation);
+			}
+
+		}
+		else if (_keys[EventKeyboard::KeyCode::KEY_RIGHT_ARROW] == true) {
+
+			if (shiftRightDown.y > tileGlPosition.y - 40
+				&& shiftLeftDown.y < tileGlPosition.y - 20)
+			{
+				shiftLocation = _player->getPosition() + Vec2(0, 3);
+				this->playerMover(shiftLocation);
+			}
+
+		}
+		else if (_keys[EventKeyboard::KeyCode::KEY_UP_ARROW] == true) {
+			if (shiftLeftUp.x > tileGlPosition.x - 40
+				&& shiftLeftUp.x < tileGlPosition.x - 20)
+			{
+
+				shiftLocation = _player->getPosition() + Vec2(3, 0);
+				this->playerMover(shiftLocation);
+			}
+		}
+		else if (_keys[EventKeyboard::KeyCode::KEY_DOWN_ARROW] == true) {
+			if (shiftLeftDown.x > tileGlPosition.x - 40
+				&& shiftLeftDown.x < tileGlPosition.x - 20)
+			{
+				shiftLocation = _player->getPosition() + Vec2(3, 0);
+				this->playerMover(shiftLocation);
+			}
+		}
+		return;
+	}
+	//Èç¹ûÅö×²¼ì²âÃ»ÓĞÎÊÌâ,ÄÇ¾ÍÔËĞĞ½øĞĞmove
+	this->playerMover(aimLocation);
 }
 
-bool Game::collidable(Vec2 tileCoord){
-    
-    for(int i = 0; i < _popVector.size(); i++){
-        //è·å–æ‰€æœ‰æ³¡æ³¡çš„ä½ç½®ï¼Œè½¬æ¢ä¸ºTileCoord
-        Vec2 popPosition = _popVector.at(i)->getPosition();
-        Vec2 popPositionForTileMap = tileCoordForPosition(popPosition);
-        
-        //åˆ¤æ–­æ³¡æ³¡çš„ä½ç½®æ˜¯å¦ä¸å°†è¦è¿åŠ¨åˆ°çš„ä½ç½®é‡åˆ
-        if(tileCoord == popPositionForTileMap){
-            return true;
-        }
-        
-    }
-    
-    int tileGid = _collidable->getTileGIDAt(tileCoord);
-    if (tileGid) {
-        // ä½¿ç”¨GIDæ¥æŸ¥æ‰¾æŒ‡å®štileçš„å±æ€§ï¼Œè¿”å›ä¸€ä¸ªValue
-        Value properties = _tileMap->getPropertiesForGID(tileGid);
-        // è¿”å›çš„Valueå®é™…æ˜¯ä¸€ä¸ªValueMap
-        ValueMap map = properties.asValueMap();
-        // æŸ¥æ‰¾ValueMapï¼Œåˆ¤æ–­æ˜¯å¦æœ‰â€å¯ç¢°æ’çš„â€œç‰©ä½“ï¼Œå¦‚æœæœ‰ï¼Œç›´æ¥è¿”å›
-        std::string value = map.at("collidable").asString();
-        if (value.compare("true") == 0)
-            return true;
-        else
-            return false;
-    }
+bool Game::collidable(Vec2 tileCoord) {
+
+	for (int i = 0; i < _popVector.size(); i++) {
+		//»ñÈ¡ËùÓĞÅİÅİµÄÎ»ÖÃ£¬×ª»»ÎªTileCoord
+		Vec2 popPosition = _popVector.at(i)->getPosition();
+		Vec2 popPositionForTileMap = tileCoordForPosition(popPosition);
+
+		//ÅĞ¶ÏÅİÅİµÄÎ»ÖÃÊÇ·ñÓë½«ÒªÔË¶¯µ½µÄÎ»ÖÃÖØºÏ
+		if (tileCoord == popPositionForTileMap) {
+			return true;
+		}
+
+	}
+
+	int tileGid = _collidable->getTileGIDAt(tileCoord);
+	if (tileGid) {
+		// Ê¹ÓÃGIDÀ´²éÕÒÖ¸¶¨tileµÄÊôĞÔ£¬·µ»ØÒ»¸öValue
+		Value properties = _tileMap->getPropertiesForGID(tileGid);
+		// ·µ»ØµÄValueÊµ¼ÊÊÇÒ»¸öValueMap
+		ValueMap map = properties.asValueMap();
+		// ²éÕÒValueMap£¬ÅĞ¶ÏÊÇ·ñÓĞ¡±¿ÉÅö×²µÄ¡°ÎïÌå£¬Èç¹ûÓĞ£¬Ö±½Ó·µ»Ø
+		std::string value = map.at("collidable").asString();
+		if (value.compare("true") == 0)
+			return true;
+		else
+			return false;
+	}
 }
 
 
