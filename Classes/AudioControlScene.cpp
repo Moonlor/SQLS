@@ -6,114 +6,114 @@
 USING_NS_CC;
 using namespace ui;
 
-Scene* AudioControl::createScene() {
-	auto scene = Scene::create();
-	auto layer = AudioControl::create();
-	scene->addChild(layer);
-	return scene;
+Scene* AudioControl::createScene(){
+    auto scene = Scene::create();
+    auto layer = AudioControl::create();
+    scene->addChild(layer);
+    return scene;
 }
 
 
-bool AudioControl::init() {
-	if (!Layer::create())
-	{
-		return false;
-	}
-
-	Size visible_size = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	//----------------------------------------------±³¾°ÒôÀÖ
-
-	auto music_text = Text::create("±³¾°ÒôÀÖ", "Arial", 20);
-	music_text->setPosition(Vec2(visible_size.width*0.25 + origin.x, origin.y + visible_size.height*0.7));
-	this->addChild(music_text);
-
-	// ´´½¨Ò»¸ö»¬¶¯Ìõ
-	auto music_slider = Slider::create();
-	// ÉèÖÃ»¬¶¯ÌõµÄÎÆÀí
-	music_slider->loadBarTexture("sliderTrack.png");
-	// ÉèÖÃ»¬¶¯ÌõµÄ¹öÂÖÎÆÀí
-	music_slider->loadSlidBallTextures("sliderThumb.png", "sliderThumb.png", "");
-	// ÉèÖÃ´¦Àí»¬¶¯ÌõµÄ½ø¶ÈÌõÎÆÀí
-	music_slider->loadProgressBarTexture("sliderProgress.png");
-	// »ñÈ¡Ö®Ç°ÉèÖÃµÄ±³¾°ÒôÀÖÒôÁ¿
-	float musicPercent = UserDefault::getInstance()->getFloatForKey("musicPercent");
-	// Èç¹ûÊÇµÚÒ»´Î½øÈëÉèÖÃ³¡¾°£¬ÉèÖÃÒôÀÖ»¬¶¯ÌõÄ¬ÈÏ³õÊ¼ÖµÎª100
-	if (musicPercent == 0.0f) {
-		musicPercent = 100.0f;
-	}
-	// ÉèÖÃÒôÀÖ»¬¶¯ÌõµÄ³õÊ¼Öµ
-	music_slider->setPercent(musicPercent);
-	music_slider->setPosition(Vec2(origin.x + visible_size.width*0.6, origin.y + visible_size.height*0.7));
-	// Ìí¼ÓÊÂ¼ş¼àÌıÆ÷,µ÷ÕûÒôÀÖÒôÁ¿
-	music_slider->addEventListener([=](Ref* pSender, Slider::EventType type) {
-		// µ±»¬¿éµÄ°Ù·Ö±È·¢Éú±ä»¯Ê±
-		if (type == Slider::EventType::ON_PERCENTAGE_CHANGED) {
-			// »ñµÃ»¬¶¯Ìõ°Ù·Ö±È
-			int percent = music_slider->getPercent();
-			// ÉèÖÃ±³¾°ÒôÀÖÖµ
-			CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(float(percent) / 100);
-			// ´æ´¢ÉèÖÃµÄ±³¾°ÒôÀÖÖµ
-			UserDefault::getInstance()->setFloatForKey("musicPercent", percent);
-		}
-	});
-	this->addChild(music_slider);
-	//---------------------------------------------ÒôĞ§
-	auto sound_text = Text::create("ÒôĞ§ÒôÁ¿", "Arial", 20);
-	sound_text->setPosition(Vec2(origin.x + visible_size.width*0.25, origin.y + visible_size.height*0.5));
-	this->addChild(sound_text);
-
-	// ´´½¨Ò»¸ö»¬¶¯Ìõ
-	auto effects_slider = Slider::create();
-	// ÉèÖÃ»¬¶¯ÌõµÄÎÆÀí
-	effects_slider->loadBarTexture("sliderTrack.png");
-	// ÉèÖÃ»¬¶¯ÌõµÄ¹öÂÖÎÆÀí
-	effects_slider->loadSlidBallTextures("sliderThumb.png", "sliderThumb.png", "");
-	// ÉèÖÃ´¦Àí»¬¶¯ÌõµÄ½ø¶ÈÌõÎÆÀí
-	effects_slider->loadProgressBarTexture("sliderProgress.png");
-	// »ñÈ¡Ö®Ç°ÉèÖÃµÄÒôĞ§ÒôÁ¿
-	float effectPercent = UserDefault::getInstance()->getFloatForKey("effectPercent");
-	// Èç¹ûÊÇµÚÒ»´Î½øÈëÉèÖÃ³¡¾°£¬ÉèÖÃÒôĞ§»¬¶¯ÌõÄ¬ÈÏ³õÊ¼ÖµÎª100
-	if (effectPercent == 0.0f) {
-		effectPercent = 100.0f;
-	}
-	// ÉèÖÃÒôĞ§»¬¶¯ÌõµÄ³õÊ¼Öµ
-	effects_slider->setPercent(effectPercent);
-	effects_slider->setPosition(Vec2(origin.x + visible_size.width*0.6, origin.y + visible_size.height*0.5));
-	// Ìí¼ÓÊÂ¼ş¼àÌıÆ÷,µ÷ÕûÒôĞ§ÒôÁ¿
-	effects_slider->addEventListener([=](Ref* pSender, Slider::EventType type) {
-		// µ±»¬¿éµÄ°Ù·Ö±È·¢Éú±ä»¯Ê±
-		if (type == Slider::EventType::ON_PERCENTAGE_CHANGED)
-		{
-			// »ñµÃ»¬¶¯Ìõ°Ù·Ö±È
-			int percent = effects_slider->getPercent();
-			// ÉèÖÃ±³¾°ÒôĞ§Öµ
-			CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(float(percent) / 100);
-			// ´æ´¢ÉèÖÃµÄ±³¾°ÒôÀÖÖµ
-			UserDefault::getInstance()->setFloatForKey("effectPercent", percent);
-		}
-	});
-	this->addChild(effects_slider);
-	//-------------------------------------------·µ»Ø°´Å¥£¨¾ßÌå¹¦ÄÜ¿É²ÎÕÕÖ®Ç°Á½Àı£©
-	auto return_button = Button::create("back_button.png");
-
-	return_button->cocos2d::Node::setScale((visible_size.width * 0.1 / return_button->getContentSize().width));
-	return_button->setPosition(Vec2(origin.x + visible_size.width - return_button->getContentSize().width / 2, origin.y + return_button->getContentSize().height / 2));
-
-	//Ìí¼Ó´¥ÃşÊÂ¼ş¼àÌıÆ÷
-	return_button->addTouchEventListener([](Ref* pSender, Widget::TouchEventType type) {
-		if (type == Widget::TouchEventType::ENDED) {
-			//´´½¨»»»ØGameMenuµÄ×ª»»
-			auto transition = TransitionSlideInL::create(0.5, GameMenu::createScene());
-			//½øĞĞ×ª»»
-			Director::getInstance()->replaceScene(transition);
-		}
-	});
-
-	this->addChild(return_button);
-
-	return true;
+bool AudioControl::init(){
+    if(!Layer::create())
+    {
+        return false;
+    }
+    
+    Size visible_size = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    
+    //----------------------------------------------èƒŒæ™¯éŸ³ä¹
+    
+    auto music_text = Text::create("èƒŒæ™¯éŸ³ä¹","Arial",20);
+    music_text->setPosition(Vec2(visible_size.width*0.25 + origin.x, origin.y + visible_size.height*0.7));
+    this->addChild(music_text);
+    
+    // åˆ›å»ºä¸€ä¸ªæ»‘åŠ¨æ¡
+    auto music_slider = Slider::create();
+    // è®¾ç½®æ»‘åŠ¨æ¡çš„çº¹ç†
+    music_slider->loadBarTexture("sliderTrack.png");
+    // è®¾ç½®æ»‘åŠ¨æ¡çš„æ»šè½®çº¹ç†
+    music_slider->loadSlidBallTextures("sliderThumb.png","sliderThumb.png","");
+    // è®¾ç½®å¤„ç†æ»‘åŠ¨æ¡çš„è¿›åº¦æ¡çº¹ç†
+    music_slider->loadProgressBarTexture("sliderProgress.png");
+    // è·å–ä¹‹å‰è®¾ç½®çš„èƒŒæ™¯éŸ³ä¹éŸ³é‡
+    float musicPercent = UserDefault::getInstance()->getFloatForKey("musicPercent");
+    // å¦‚æœæ˜¯ç¬¬ä¸€æ¬¡è¿›å…¥è®¾ç½®åœºæ™¯ï¼Œè®¾ç½®éŸ³ä¹æ»‘åŠ¨æ¡é»˜è®¤åˆå§‹å€¼ä¸º100
+    if(musicPercent == 0.0f){
+        musicPercent = 100.0f;
+    }
+    // è®¾ç½®éŸ³ä¹æ»‘åŠ¨æ¡çš„åˆå§‹å€¼
+    music_slider->setPercent(musicPercent);
+    music_slider->setPosition(Vec2(origin.x + visible_size.width*0.6, origin.y +  visible_size.height*0.7));
+    // æ·»åŠ äº‹ä»¶ç›‘å¬å™¨,è°ƒæ•´éŸ³ä¹éŸ³é‡
+    music_slider->addEventListener([=](Ref* pSender, Slider::EventType type){
+        // å½“æ»‘å—çš„ç™¾åˆ†æ¯”å‘ç”Ÿå˜åŒ–æ—¶
+        if(type == Slider::EventType::ON_PERCENTAGE_CHANGED){
+            // è·å¾—æ»‘åŠ¨æ¡ç™¾åˆ†æ¯”
+            int percent = music_slider->getPercent();
+             // è®¾ç½®èƒŒæ™¯éŸ³ä¹å€¼
+            CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(float(percent)/100);
+            // å­˜å‚¨è®¾ç½®çš„èƒŒæ™¯éŸ³ä¹å€¼
+            UserDefault::getInstance()->setFloatForKey("musicPercent", percent);
+        }
+    });
+    this->addChild(music_slider);
+    //---------------------------------------------éŸ³æ•ˆ
+    auto sound_text = Text::create("éŸ³æ•ˆéŸ³é‡", "Arial", 20);
+    sound_text->setPosition(Vec2(origin.x + visible_size.width*0.25, origin.y + visible_size.height*0.5));
+    this->addChild(sound_text);
+    
+    // åˆ›å»ºä¸€ä¸ªæ»‘åŠ¨æ¡
+    auto effects_slider = Slider::create();
+    // è®¾ç½®æ»‘åŠ¨æ¡çš„çº¹ç†
+    effects_slider->loadBarTexture("sliderTrack.png");
+    // è®¾ç½®æ»‘åŠ¨æ¡çš„æ»šè½®çº¹ç†
+    effects_slider->loadSlidBallTextures("sliderThumb.png", "sliderThumb.png", "");
+    // è®¾ç½®å¤„ç†æ»‘åŠ¨æ¡çš„è¿›åº¦æ¡çº¹ç†
+    effects_slider->loadProgressBarTexture("sliderProgress.png");
+    // è·å–ä¹‹å‰è®¾ç½®çš„éŸ³æ•ˆéŸ³é‡
+    float effectPercent = UserDefault::getInstance()->getFloatForKey("effectPercent");
+    // å¦‚æœæ˜¯ç¬¬ä¸€æ¬¡è¿›å…¥è®¾ç½®åœºæ™¯ï¼Œè®¾ç½®éŸ³æ•ˆæ»‘åŠ¨æ¡é»˜è®¤åˆå§‹å€¼ä¸º100
+    if (effectPercent == 0.0f) {
+        effectPercent = 100.0f;
+    }
+    // è®¾ç½®éŸ³æ•ˆæ»‘åŠ¨æ¡çš„åˆå§‹å€¼
+    effects_slider->setPercent(effectPercent);
+    effects_slider->setPosition(Vec2(origin.x + visible_size.width*0.6, origin.y + visible_size.height*0.5));
+    // æ·»åŠ äº‹ä»¶ç›‘å¬å™¨,è°ƒæ•´éŸ³æ•ˆéŸ³é‡
+    effects_slider->addEventListener([=](Ref* pSender,Slider::EventType type){
+        // å½“æ»‘å—çš„ç™¾åˆ†æ¯”å‘ç”Ÿå˜åŒ–æ—¶
+        if(type == Slider::EventType::ON_PERCENTAGE_CHANGED)
+        {
+            // è·å¾—æ»‘åŠ¨æ¡ç™¾åˆ†æ¯”
+            int percent = effects_slider->getPercent();
+            // è®¾ç½®èƒŒæ™¯éŸ³æ•ˆå€¼
+            CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(float(percent)/100);
+            // å­˜å‚¨è®¾ç½®çš„èƒŒæ™¯éŸ³ä¹å€¼
+            UserDefault::getInstance()->setFloatForKey("effectPercent", percent);
+        }
+    });
+    this->addChild(effects_slider);
+    //-------------------------------------------è¿”å›æŒ‰é’®ï¼ˆå…·ä½“åŠŸèƒ½å¯å‚ç…§ä¹‹å‰ä¸¤ä¾‹ï¼‰
+    auto return_button = Button::create("back_button.png");
+    
+    return_button->cocos2d::Node::setScale((visible_size.width * 0.1 / return_button->getContentSize().width));
+    return_button->setPosition(Vec2(origin.x + visible_size.width - return_button->getContentSize().width/2, origin.y + return_button->getContentSize().height/2));
+    
+    //æ·»åŠ è§¦æ‘¸äº‹ä»¶ç›‘å¬å™¨
+    return_button->addTouchEventListener([](Ref* pSender, Widget::TouchEventType type){
+        if(type == Widget::TouchEventType::ENDED){
+            //åˆ›å»ºæ¢å›GameMenuçš„è½¬æ¢
+            auto transition = TransitionSlideInL::create(0.5, GameMenu::createScene());
+            //è¿›è¡Œè½¬æ¢
+            Director::getInstance()->replaceScene(transition);
+        }
+    });
+    
+    this->addChild(return_button);
+    
+    return true;
 }
 
 

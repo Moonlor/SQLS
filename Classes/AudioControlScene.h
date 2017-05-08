@@ -10,12 +10,12 @@
 class AudioControl : public cocos2d::Layer
 {
 public:
-	//创建场景
-	static cocos2d::Scene* createScene();
-	//创建自定义的init函数，当成功创建场景的时候返回true
-	virtual bool init();
-
-	CREATE_FUNC(AudioControl);
+    //鍒涘缓鍦烘櫙
+    static cocos2d::Scene* createScene();
+    //鍒涘缓鑷畾涔夌殑init鍑芥暟锛屽綋鎴愬姛鍒涘缓鍦烘櫙鐨勬椂鍊欒繑鍥瀟rue
+    virtual bool init();
+    
+    CREATE_FUNC(AudioControl);
 };
 
 
