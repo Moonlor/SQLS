@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="17" height="17" tilewidth="40" tileheight="40" nextobjectid="3">
+ <tileset firstgid="1" name="TownHouse" tilewidth="40" tileheight="40" tilecount="16" columns="8">
+  <image source="TownHouse.png" width="320" height="80"/>
+ </tileset>
+ <tileset firstgid="17" name="TownDestroyable" tilewidth="40" tileheight="40" tilecount="16" columns="8">
+  <image source="TownDestroyable.png" width="320" height="80"/>
+  <tile id="8">
+   <properties>
+    <property name="breakable" type="bool" value="true"/>
+    <property name="bush" type="bool" value="false"/>
+    <property name="collidable" type="bool" value="true"/>
+    <property name="red" type="bool" value="true"/>
+    <property name="wood" type="bool" value="false"/>
+    <property name="yellow" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="breakable" type="bool" value="true"/>
+    <property name="bush" type="bool" value="false"/>
+    <property name="collidable" type="bool" value="true"/>
+    <property name="red" type="bool" value="false"/>
+    <property name="wood" type="bool" value="false"/>
+    <property name="yellow" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="breakable" type="bool" value="true"/>
+    <property name="bush" type="bool" value="false"/>
+    <property name="collidable" type="bool" value="true"/>
+    <property name="red" type="bool" value="false"/>
+    <property name="wood" type="bool" value="true"/>
+    <property name="yellow" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="14">
+   <properties>
+    <property name="breakable" type="bool" value="true"/>
+    <property name="bush" type="bool" value="true"/>
+    <property name="collidable" type="bool" value="true"/>
+    <property name="red" type="bool" value="false"/>
+    <property name="wood" type="bool" value="false"/>
+    <property name="yellow" type="bool" value="false"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="33" name="TownGround" tilewidth="40" tileheight="40" tilecount="7" columns="7">
+  <image source="TownGround.png" width="280" height="40"/>
+ </tileset>
+ <tileset firstgid="40" name="collidablesTileSet" tilewidth="40" tileheight="40" tilecount="4" columns="4">
+  <image source="collidablesTileSet.png" width="192" height="64"/>
+  <tile id="0">
+   <properties>
+    <property name="collidable" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="44" name="Props" tilewidth="40" tileheight="40" tilecount="6" columns="6">
+  <image source="gay.png" width="240" height="40"/>
+  <tile id="0">
+   <properties>
+    <property name="empty" type="bool" value="true"/>
+    <property name="pop" type="bool" value="false"/>
+    <property name="shoe" type="bool" value="false"/>
+    <property name="turtle" type="bool" value="false"/>
+    <property name="ufo" type="bool" value="false"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="empty" type="bool" value="false"/>
+    <property name="pop" type="bool" value="true"/>
+    <property name="shoe" type="bool" value="false"/>
+    <property name="turtle" type="bool" value="false"/>
+    <property name="ufo" type="bool" value="false"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="empty" type="bool" value="false"/>
+    <property name="pop" type="bool" value="false"/>
+    <property name="shoe" type="bool" value="false"/>
+    <property name="turtle" type="bool" value="false"/>
+    <property name="ufo" type="bool" value="false"/>
+    <property name="water" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="empty" type="bool" value="false"/>
+    <property name="pop" type="bool" value="false"/>
+    <property name="shoe" type="bool" value="true"/>
+    <property name="turtle" type="bool" value="false"/>
+    <property name="ufo" type="bool" value="false"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="empty" type="bool" value="false"/>
+    <property name="pop" type="bool" value="false"/>
+    <property name="shoe" type="bool" value="false"/>
+    <property name="turtle" type="bool" value="false"/>
+    <property name="ufo" type="bool" value="true"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+  <tile id="5">
+   <properties>
+    <property name="empty" type="bool" value="false"/>
+    <property name="pop" type="bool" value="false"/>
+    <property name="shoe" type="bool" value="false"/>
+    <property name="turtle" type="bool" value="true"/>
+    <property name="ufo" type="bool" value="false"/>
+    <property name="water" type="bool" value="false"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="background" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAOUKQAj5oxasaoGUPXDEoBAL6XHQI=
+  </data>
+ </layer>
+ <layer name="collidable" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJzTYGBg0KACpgQQYwYhNSPNHdQwgxp+GQ0P6ruDGmbQ0y+UYgAUWQvh
+  </data>
+ </layer>
+ <layer name="houseBottom" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgagBuKBxrwQ/FwAJxQPNBmDBYwnOKWF4qHAgAAUBMAkQ==
+  </data>
+ </layer>
+ <layer name="blockBottom" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAtkEXDhIAkGiZGHTqQRsL4AD51hOwnRi02c+XRMCH1uOwiNpyw+Q9djBAfmx3oYoT4+NyBjklxBwjgC1NS4pEUQKq5lKRTZLW43EFJfsEGSM23lAAA40gI9Q==
+  </data>
+ </layer>
+ <layer name="Props" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJy1U0EKwDAI80HW7v+v2wYNlEyr3VjAi0SjQUX+Rbuij2gF/s3TwbUFzyYeA3lNtFa8Sj3QxZ/Vyx0UPE9FC17O3kYweXqkNBu8BNh7dWbLenCN1yPbhWu8XZBHLXue3dFbQHOHz8D9Vfpkd2qBxqwf/Uukt/O3X3ACpBUPSg==
+  </data>
+ </layer>
+ <layer name="redBlockTop" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAeEELDxKhDB1JoGBfAp4aQ/cSoJWQ/OWrRw4cUd6LbRWw4YbMDXYwQH5sd6GKE+OT4lRh3EALY9JDqFkrTB0w9NnMHQ34ZaAAAUVwGtQ==
+  </data>
+ </layer>
+ <layer name="yellowBlockTop" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYBhcQAQJk6tOBgnjA/jUEbKfGPWE7CekHpv/0MUI8bH5D12MEB+fO9AxOe5Ax/j0DBZAbDpFVosOiE2nyGqHIwAAR0YF0Q==
+  </data>
+ </layer>
+ <layer name="woodBlockTop" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYMANxNAwOUAODY+CUTAKaAuGWr4FAN6xAaE=
+  </data>
+ </layer>
+ <layer name="bushBlockTop" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFxAIJNEwOUEDDIx2MhukoAABmwAHB
+  </data>
+ </layer>
+ <layer name="houseTop" width="17" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYKA9YIFiSgAPFFMCOKCYEiAAxQMNmKB4oM3gguKBBsMpbtmgmBLAB8VDAQAA0BsAxQ==
+  </data>
+ </layer>
+</map>

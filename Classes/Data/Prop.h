@@ -1,5 +1,5 @@
 /*****************************************************************************
- *  Copyright (C) 2017 cocos
+ *  Copyright (C) 2017 宋天佑 13167211978@163.com
  *
  *  此文件属于软件学院2017c++大项目泡泡堂选题的项目文件.
  *
@@ -18,14 +18,14 @@
  *  另外注意: 此项目需要您自行配置cocos环境,安装boost库, 如果遇到相关问题的话, 欢迎将
  *  错误日志发给我们, 您的帮助将有助于改善游戏的体验.
  *
- *  @file       AppDelegate.h
- *  @brief
+ *  @file     Prop.h
+ *  @brief    道具的信息类
  *  Details.
  *
- *  @author   cocos
- *  @email
- *  @version
- *  @date
+ *  @author   宋天佑
+ *  @email    13167211978@qq.com
+ *  @version  4.0.1.5(版本号)
+ *  @date      2017/06/02
  *  @license  Massachusetts Institute of Technology License (MIT)
  *
  *----------------------------------------------------------------------------
@@ -34,48 +34,85 @@
  *  Change History :
  *  <Date>     | <Version> | <Author>       | <Description>
  *----------------------------------------------------------------------------
- *  2017/05/03 | 1.0.0.1   | cocos          | Create file
+ *  2017/06/02 | 4.0.1.5  | 宋天佑            | Create file
  *----------------------------------------------------------------------------
  *
  *****************************************************************************/
-#ifndef  _APP_DELEGATE_H_
-#define  _APP_DELEGATE_H_
 
+#ifndef Prop_h
+#define Prop_h
+
+
+#include <iostream>
 #include "cocos2d.h"
-#include <vector>
-
+USING_NS_CC;
+using namespace ui;
 /**
-@brief    The cocos2d Application.
-
-Private inheritance here hides part of interface from Director.
-*/
-class  AppDelegate : private cocos2d::Application
+ * @brief 道具类 继承自cocos2d:Sprite
+ * 这是Pop的控制类,这里存储着道具的种类
+ */
+class Prop: public cocos2d::Sprite
 {
+private:
+    int _propType; /// 道具种类
 public:
-	AppDelegate();
-	virtual ~AppDelegate();
+    
+    /** 
+    * @brief Prop的create函数
+    * @param filename文件的名字
+    * @return  Prop*
+    */
+    static Prop* create(const std::string& filename)
+    {
+        Prop *sprite = new Prop();
+        if (sprite && sprite->initWithFile(filename))
+        {
+            sprite->autorelease();
+            return sprite;
+        }
+        CC_SAFE_DELETE(sprite);
+        return nullptr;
+    }
+    
+    /** 
+    * @brief Prop的create函数
+    * @param filename文件的名字
+    * @return  Prop*
+    */
+    static Prop* createWithSpriteFrameName(const std::string& filename)
+    {
+        Prop *sprite = new Prop();
+        if (sprite && sprite->initWithSpriteFrameName(filename))
+        {
+            sprite->autorelease();
+            return sprite;
+        }
+        CC_SAFE_DELETE(sprite);
+        return nullptr;
+    }
+    
+    /** 
+    * @brief 设置道具的类型
+    * @param type 类型
+    * @return  void
+    */
+    void setPropType(int type)
+    {
+        _propType = type;
+    }
+    
+    /** 
+    * @brief 获得道具的类型
+    * @return  int
+    */
+    int getPropType()
+    {
+        return _propType;
+    }
 
-	virtual void initGLContextAttrs();
-
-	/**
-	@brief    Implement Director and Scene init code here.
-	@return true    Initialize success, app continue.
-	@return false   Initialize failed, app terminate.
-	*/
-	virtual bool applicationDidFinishLaunching();
-
-	/**
-	@brief  Called when the application moves to the background
-	@param  the pointer of the application
-	*/
-	virtual void applicationDidEnterBackground();
-
-	/**
-	@brief  Called when the application reenters the foreground
-	@param  the pointer of the application
-	*/
-	virtual void applicationWillEnterForeground();
 };
 
-#endif // _APP_DELEGATE_H_
 
+
+
+#endif /* Prop_h */
